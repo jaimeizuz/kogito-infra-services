@@ -1,0 +1,4 @@
+.env
+svg/
+persistence/
+/tempo/data/*

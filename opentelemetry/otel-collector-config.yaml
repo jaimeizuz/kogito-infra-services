@@ -1,0 +1,71 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  # Data sources: metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: kogito-app-example
+          metrics_path: '/q/metrics/prometheus'
+          scrape_interval: 5s
+          static_configs:
+            - targets: [kogito-app-example:8080]
+
+exporters:
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  otlphttp/lokilogs:
+    endpoint: http://loki:3100/otlp
+    tls:
+      insecure: true
+  # OTLP
+  #otlp:
+    #endpoint: otelcol:4317
+  # Data sources: traces
+  otlp/jaeger:
+    endpoint: "jaeger:4317"
+    tls:
+      insecure: true
+  elasticsearch:
+    endpoints: [http://elasticsearch:9200]
+    user: elastic
+    password: 
+    api_key:
+  prometheus:
+    endpoint: 0.0.0.0:8889
+  prometheusremotewrite:
+    endpoint: http://localhost:9090/api/v1/write
+    tls:
+      insecure: true
+  debug:
+    verbosity: detailed
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/jaeger,elasticsearch,otlp/tempo]
+      #exporters: [spanmetrics, otlp]
+    # The exporter name in this pipeline must match the spanmetrics.metrics_exporter name.
+    # The receiver is just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
+    metrics:
+      receivers: [otlp,prometheus]
+    #  processors: [batch]
+      exporters: [prometheus]
+    logs:
+      receivers: [otlp]
+      exporters: [debug,elasticsearch,otlphttp/lokilogs]
+    #metrics/spanmetrics:
+    #    receivers: [spanmetrics]
+    #    exporters: [prometheus]
+  
