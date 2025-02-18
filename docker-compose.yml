@@ -547,6 +547,9 @@ services:
     image: docker.io/elastic/kibana:8.16.2
     environment:
       xpack.monitoring.collection.enabled: "true"
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d121d3beceec14b5c20ee815cd2c9337
+      XPACK_REPORTING_ENCRIPTIONKEY: 3739d02dd358ccb3915cbbd89a6f5150
+      XPACK_SECURITY_ENCRIPTIONKEY: 5c4eaf77fdde275944bb1a876a9af87a
     profiles:
       - full
       - elk
