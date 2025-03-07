@@ -9,6 +9,7 @@ import org.jboss.logging.Logger;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.kogito.hr.rest.client.DummyRestClient;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemHandlerRuntimeException;
 
 @ApplicationScoped
 public class DummyServiceTask {
@@ -26,13 +27,7 @@ public class DummyServiceTask {
             response = dummyRestClient.getDummy();
         }
         catch(Exception ex) {
-            throw new WorkItemExecutionException("restDummyException");
-        }
-
-        if(response.getStatus() == 204) {
-            //throw new ProcessWorkItemHandlerException(processId, strategy, new RuntimeException("On purpose"));
-            //throw new WorkItemExecutionException("restDummyResultNotExpectedException");
-            throw new WorkItemExecutionException("restDummyResultNotExpectedException");
-        }            
+            throw new WorkItemHandlerRuntimeException(ex);
+        }           
     }
 }

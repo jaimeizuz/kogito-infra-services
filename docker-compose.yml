@@ -119,8 +119,8 @@ services:
       - '8800:8080'
   kogito-management-console:
     container_name: kogito-management-console
-    #image: apache/incubator-kie-kogito-management-console:10.0.0
-    image: jizuzquiza/bamoe-management-console:9.1.2-ibm-0006
+    image: apache/incubator-kie-kogito-management-console:main
+    #image: jizuzquiza/bamoe-management-console:9.1.2-ibm-0006
     profiles:
       - full
       - kogito-consoles
