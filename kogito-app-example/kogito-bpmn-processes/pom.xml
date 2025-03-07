@@ -148,8 +148,8 @@
         -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.8.6</quarkus.platform.version>
-        <quarkus-plugin.version>3.8.6</quarkus-plugin.version>
+        <quarkus.platform.version>3.8.6.1</quarkus.platform.version>
+        <quarkus-plugin.version>3.8.6.1</quarkus-plugin.version>
         <bamoe.version>9.1.2-ibm-0006</bamoe.version>
         <bamoe.bom.group-id>com.ibm.bamoe</bamoe.bom.group-id>
         <bamoe.bom.artifact-id>bamoe-bom</bamoe.bom.artifact-id>
