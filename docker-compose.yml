@@ -143,6 +143,9 @@ services:
       - '5432:5432'
     volumes:
       - './sql:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgresql.conf:/etc/postgresql.conf'
+    command:
+      postgres -c config_file=/etc/postgresql.conf
     healthcheck:
       test:
         - CMD
@@ -314,6 +317,7 @@ services:
     # mount the local directory that contains your license key to the container.
     # give Redpanda Console read access to the license.
     volumes:
+    # Remove ro?
       - ./license:/etc/redpanda:ro
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml && echo "$$CONSOLE_ROLEBINDINGS_CONFIG_FILE" > /tmp/role-bindings.yml && /app/console'
@@ -449,8 +453,7 @@ services:
     container_name: grafana
     image: grafana/grafana:11.4.0
     profiles:
-      - full
-      - monitoring
+      - dashboards
     volumes:
       - './grafana/grafana.ini:/etc/grafana/grafana.ini:z'
       - >-
@@ -488,6 +491,7 @@ services:
       - monitoring
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
+    # Remove :z?
       - ./tempo/tempo.yaml:/etc/tempo.yaml:z
       - ./tempo/data:/var/tempo:z
     ports:
@@ -543,7 +547,7 @@ services:
       XPACK_REPORTING_ENCRIPTIONKEY: 3739d02dd358ccb3915cbbd89a6f5150
       XPACK_SECURITY_ENCRIPTIONKEY: 5c4eaf77fdde275944bb1a876a9af87a
     profiles:
-      - full
+      - dashboards
       - elk
     ports:
       - "5601:5601"
