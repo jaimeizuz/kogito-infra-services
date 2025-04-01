@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
 import org.kie.kogito.usertask.UserTaskAssignmentStrategy;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
@@ -97,9 +96,15 @@ public class CustomUserTaskLifeCycle implements UserTaskLifeCycle {
                 T_ACTIVE_ACTIVE_R);
     }
 
+    // Overridable since 999-202503x
     @Override
     public List<UserTaskTransition> allowedTransitions(UserTaskInstance userTaskInstance, IdentityProvider identityProvider) {
         checkPermission(userTaskInstance, identityProvider);
+        return transitions.stream().filter(t -> t.source().equals(userTaskInstance.getStatus())).toList();
+    }
+
+    //@Override
+    public List<UserTaskTransition> allowedTransitions(UserTaskInstance userTaskInstance) {
         return transitions.stream().filter(t -> t.source().equals(userTaskInstance.getStatus())).toList();
     }
 

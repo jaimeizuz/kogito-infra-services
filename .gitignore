@@ -1,4 +1,5 @@
 .env
+.vscode
 svg/
 persistence/
 /tempo/data/*

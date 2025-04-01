@@ -214,10 +214,11 @@
 									"raw": "{\r\n    \"operationName\": \"getProcessInstanceById\",\r\n    \"variables\": {\r\n        \"id\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"query getProcessInstanceById($id: String) {\\n  ProcessInstances(where: {id: {equal: $id}}) {\\n    id\\n    processId\\n    processName\\n    businessKey\\n    parentProcessInstanceId\\n    parentProcessInstance {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    roles\\n    variables\\n    state\\n    start\\n    lastUpdate\\n    end\\n    addons\\n    endpoint\\n    addons\\n    serviceUrl\\n    source\\n    error {\\n      nodeDefinitionId\\n      message\\n      __typename\\n    }\\n    childProcessInstances {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    nodes {\\n      id\\n      nodeId\\n      name\\n      enter\\n      exit\\n      type\\n      definitionId\\n      __typename\\n    }\\n    milestones {\\n      id\\n      name\\n      status\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}"
 								},
 								"url": {
-									"raw": "{{bamoe-localhost}}/graphql",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/graphql",
 									"host": [
-										"{{bamoe-localhost}}"
+										"{{kogito-service-host}}"
 									],
+									"port": "{{kogito-service-port}}",
 									"path": [
 										"graphql"
 									]
@@ -244,7 +245,8 @@
 											"            .replaceAll(\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\", \"\"))\r",
 											"});"
 										],
-										"type": "text/javascript"
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -267,10 +269,11 @@
 									"raw": "{\r\n    \"operationName\": \"getProcessInstanceSVG\",\r\n    \"variables\": {\r\n        \"processId\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"query getProcessInstanceSVG($processId: String) {\\n  ProcessInstances(where: {id: {equal: $processId}}) {\\n    diagram\\n  }\\n}\\n\"\r\n}"
 								},
 								"url": {
-									"raw": "{{bamoe-localhost}}/graphql",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/graphql",
 									"host": [
-										"{{bamoe-localhost}}"
+										"{{kogito-service-host}}"
 									],
+									"port": "{{kogito-service-port}}",
 									"path": [
 										"graphql"
 									]
@@ -478,7 +481,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"candidateData\": {\r\n    \"name\": \"Jon\",\r\n    \"lastName\": \"Snow\",\r\n    \"email\": \"jon@snow.org\",\r\n    \"experience\": 5,\r\n    \"skills\": [\"Java\", \"Kogito\", \"Fencing\"]\r\n  },\r\n  \"expirationTime\" : \"PT120S\",\r\n  \"throwException\" : false\r\n}",
+									"raw": "{\r\n  \"candidateData\": {\r\n    \"name\": \"Jon\",\r\n    \"lastName\": \"Snow\",\r\n    \"email\": \"jon@snow.org\",\r\n    \"experience\": 5,\r\n    \"skills\": [\"Java\", \"Kogito\", \"Fencing\"]\r\n  },\r\n  \"expirationTime\" : \"PT120S\",\r\n  \"throwException\" : false,\r\n  \"workitemType\" : \"WIH\",\r\n  \"errorStrategy\" : \"RETHROW\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1143,7 +1146,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"transitionId\" : \"complete\",\r\n    \"data\" : {\r\n        \"validData\" : false\r\n    }\r\n}",
+									"raw": "{\r\n    \"transitionId\" : \"complete\",\r\n    \"data\" : {\r\n        \"approve\" : false,\r\n        \"offer\": {\r\n            \"category\": \"Senior Software Engineer\",\r\n            \"salary\": 40450\r\n        }\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1858,7 +1861,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{kogito-service-host}}:{{kogito-service-port}}/q/logging-manager?loggerName=org.kie.kogito",
+							"raw": "{{kogito-service-host}}:{{kogito-service-port}}/q/logging-manager?loggerName=org.kie.kogito.jobs.service",
 							"host": [
 								"{{kogito-service-host}}"
 							],
@@ -1870,7 +1873,7 @@
 							"query": [
 								{
 									"key": "loggerName",
-									"value": "org.kie.kogito"
+									"value": "org.kie.kogito.jobs.service"
 								}
 							]
 						}
@@ -1915,7 +1918,7 @@
 								},
 								{
 									"key": "loggerName",
-									"value": "org.wildfly.security.auth.realm.token.validator",
+									"value": "org.jbpm.process.instance.context.exception",
 									"type": "text"
 								}
 							]
@@ -2485,7 +2488,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"query\": \"{GetAllProcessInstancesState {eventId, processInstanceId, eventType, eventDate}}\"\r\n}",
+							"raw": "{\r\n    \"query\": \"{ GetAllProcessInstancesStateByProcessId (processId : \\\"travellers\\\") { eventId, eventDate, processType, processId, processVersion, parentProcessInstanceId, rootProcessId, rootProcessInstanceId, processInstanceId, businessKey, eventType, outcome, state, slaDueDate, roles} }\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

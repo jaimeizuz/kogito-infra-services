@@ -11,8 +11,8 @@
     }
   },
   "response" : {
-    "status" : 200,
-    "body" : "{\n  \"message\" : \"Hello, world\"\n}",
+    "status" : 500,
+    "body" : "{}",
     "headers" : {
       "Content-Type" : "application/json"
     }

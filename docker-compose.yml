@@ -72,33 +72,26 @@ services:
       QUARKUS_LOG_HANDLER_GELF_HOST: logstash
       QUARKUS_LOG_HANDLER_GELF_PORT: 12201
       QUARKUS_LOG_HANDLER_GELF_INCLUDE_FULL_MDC: "true"
-      KAFKA_BOOTSTRAP_SERVERS: redpanda:9093
-      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_TOPIC: kogito-processinstances-events
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_TOPIC: kogito-usertaskinstances-events
-      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_TOPIC: kogito-processdefinitions-events
-      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      #KAFKA_BOOTSTRAP_SERVERS: redpanda:9093
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_TOPIC: kogito-processinstances-events
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      #MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_TOPIC: kogito-usertaskinstances-events
+      #MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_TOPIC: kogito-processdefinitions-events
+      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
       #KOGITO_ADDON_MESSAGING_INCOMING_DEFAULTNAME: kogito-app-example-incoming-stream
       #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_TOPIC: sendConfirmationForm
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_TOPIC: sendConfirmationForm
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
       #KOGITO_ADDON_MESSAGING_OUTGOING_DEFAULTNAME: kogito-app-example-outgoing-stream
       #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_TOPIC: receiveConfirmation
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #KOGITO_ADDON_MONITORING_ELASTIC_HOST: http://elasticsearch:9200
-      #KOGITO_ADDON_MONITORING_ELASTIC_INDEX: kogito-bpmn-processes
-      #KOGITO_ADDON_MONITORING_ELASTIC_AUTOCREATEINDEX: "false"
-      #KOGITO_ADDON_MONITORING_ELASTIC_STEP: 3s
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_TOPIC: receiveConfirmation
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
       KOGITO_EVENTS_GROUPING: "false"
       KIE_FLYWAY_ENABLED: "true"
       KOGITO_PROCESSES_TRANSACTIONENABLED: "true"
@@ -112,7 +105,7 @@ services:
   bamoe-maven-repository:
     container_name: bamoe-maven-repository
     #image: apache/incubator-kie-kogito-management-console:10.0.0
-    image: jizuzquiza/bamoe-maven-repository:9.1.2-ibm-0006
+    image: quay.io/bamoe/maven-repository:9.2.0-ibm-0004
     profiles:
       - full
     ports:
@@ -120,7 +113,7 @@ services:
   kogito-management-console:
     container_name: kogito-management-console
     image: apache/incubator-kie-kogito-management-console:main
-    #image: jizuzquiza/bamoe-management-console:9.1.2-ibm-0006
+    #image: quay.io/bamoe/management-console:9.2.0-ibm-0004
     profiles:
       - full
       - kogito-consoles
@@ -136,12 +129,11 @@ services:
       KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
       KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "PROD"
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://localhost:8080/graphql
       RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: "Active,Ready,Reserved,Completed,Aborted,Skipped"
       RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: "Active,Ready,Reserved"
   postgres:
     container_name: postgres
-    image: 'postgres:16.1-alpine3.19'
+    image: 'postgres:16.8-alpine3.21'
     profiles:
       - infra
       - example
@@ -167,7 +159,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
   pgadmin:
-    image: dpage/pgadmin4:8.2
+    image: dpage/pgadmin4:9.1
     container_name: pgadmin
     profiles:
       - full
@@ -193,8 +185,7 @@ services:
     container_name: mysql
     image: jizuzquiza/mysql:8.0.16
     profiles:
-      - full
-      - business-services
+      - mysql
     environment:
       MYSQL_ROOT_PASSWORD: password@1
     volumes:
@@ -435,6 +426,7 @@ services:
       - '15680:55680'
     depends_on:
       - jaeger
+      - logstash
   microsim:
     container_name: microsim
     image: 'yurishkuro/microsim:0.3.0'
@@ -570,7 +562,6 @@ services:
   castlemock:
     container_name: castlemock
     profiles:
-      - full
       - mock-server
     image: castlemock/castlemock:v1.63
     ports:
