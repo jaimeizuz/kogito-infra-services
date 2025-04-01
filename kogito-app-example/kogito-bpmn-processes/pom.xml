@@ -519,6 +519,9 @@
 
     <profile>
       <id>container</id>
+      <properties>
+        <quarkus.profile>container</quarkus.profile>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>io.quarkus</groupId>
