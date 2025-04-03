@@ -20,6 +20,12 @@ services:
       QUARKUS_DATASOURCE_DB_KIND: postgresql
       QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "true"
       QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "true"
+      # XA transaction objects datasource
+      QUARKUS_DATASOURCE__XA-OBJECT-STORE__JDBC_URL: 'jdbc:postgresql://postgres:5432/xa-object-store?currentSchema=public'
+      QUARKUS_DATASOURCE__XA-OBJECT-STORE__REACTIVE_URL: 'postgresql://postgres:5432/xa-object-store?currentSchema=public'
+      QUARKUS_DATASOURCE__XA-OBJECT-STORE__USERNAME: kogito-user
+      QUARKUS_DATASOURCE__XA-OBJECT-STORE__PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE__XA-OBJECT-STORE__DB_KIND: postgresql
       # The initial size of the pool. Usually you will want to set the initial size to match at least the minimal size, 
       # but this is not enforced so to allow for architectures which prefer a lazy initialization of the connections on boot, 
       # while being able to sustain a minimal pool size after boot. DEFAULT: null
@@ -43,6 +49,7 @@ services:
       # The transaction isolation level. DEFAULT: null
       # QUARKUS_DATASOURCE_JDBC_TRANSACTION_ISOLATION_LEVEL: undefined, none, read-uncommitted, read-committed, repeatable-read, serializable
       QUARKUS_TRANSACTION-MANAGER_ENABLE-RECOVERY: "true"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_DATASOURCE: "xa-object-store"
       QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_TYPE: "jdbc"
       QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_CREATE-TABLE: "true"
       KOGITO_SERVICE_URL: 'http://kogito-bpmn-processes:8080'
