@@ -91,4 +91,10 @@ public class CandidateData implements Serializable {
     public String getFullName() {
         return name + " " + lastName;
     }
+
+    @Override
+    public String toString() {
+        return "CandidateData [name=" + name + ", lastName=" + lastName + ", email=" + email + ", experience="
+                + experience + ", skills=" + skills + "]";
+    }
 }
