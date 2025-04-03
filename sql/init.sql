@@ -16,7 +16,7 @@ CREATE DATABASE kogito
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
 
-CREATE DATABASE xa-object-store
+CREATE DATABASE "xa-object-store"
     WITH
     OWNER = "kogito-user"
     ENCODING = 'UTF8'
@@ -37,8 +37,8 @@ CREATE DATABASE keycloak
 GRANT ALL PRIVILEGES ON DATABASE postgres TO "kogito-user";
 GRANT ALL PRIVILEGES ON DATABASE kogito TO "kogito-user";
 GRANT ALL PRIVILEGES ON DATABASE kogito TO postgres;
-GRANT ALL PRIVILEGES ON DATABASE xa-object-store TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE xa-object-store TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE "xa-object-store" TO "kogito-user";
+GRANT ALL PRIVILEGES ON DATABASE "xa-object-store" TO postgres;
 
 GRANT ALL PRIVILEGES ON DATABASE keycloak TO "kogito-user";
 GRANT ALL PRIVILEGES ON DATABASE keycloak TO postgres;
