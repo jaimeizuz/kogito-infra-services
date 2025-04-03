@@ -35,8 +35,8 @@ public class CustomHiringProcessOperationsResource {
     @Inject
     StatefulProcessService statefulProcessService;
 
-    @Inject
-    ProcessService processService;
+    //@Inject
+    //ProcessService processService;
 
     //@Inject()
     //@Named("hiring")

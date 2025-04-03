@@ -18,8 +18,8 @@ services:
       QUARKUS_DATASOURCE_USERNAME: kogito-user
       QUARKUS_DATASOURCE_PASSWORD: kogito-pass
       QUARKUS_DATASOURCE_DB_KIND: postgresql
-      QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "false"
-      QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "false"
+      QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "true"
+      QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "true"
       # The initial size of the pool. Usually you will want to set the initial size to match at least the minimal size, 
       # but this is not enforced so to allow for architectures which prefer a lazy initialization of the connections on boot, 
       # while being able to sustain a minimal pool size after boot. DEFAULT: null
@@ -42,6 +42,9 @@ services:
       # QUARKUS_DATASOURCE_JDBC_MAX_LIFETIME: 1M
       # The transaction isolation level. DEFAULT: null
       # QUARKUS_DATASOURCE_JDBC_TRANSACTION_ISOLATION_LEVEL: undefined, none, read-uncommitted, read-committed, repeatable-read, serializable
+      QUARKUS_TRANSACTION-MANAGER_ENABLE-RECOVERY: "true"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_TYPE: "jdbc"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_CREATE-TABLE: "true"
       KOGITO_SERVICE_URL: 'http://kogito-bpmn-processes:8080'
       KOGITO_DATA_INDEX_URL: 'http://localhost:8080'
       KOGITO_JOBS_SERVICE_URL: 'http://localhost:8080'

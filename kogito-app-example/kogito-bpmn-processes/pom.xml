@@ -518,6 +518,22 @@
     </profile>
 
     <profile>
+      <id>oidc-security</id>
+      <dependencies>
+        <!-- OIDC Proxy -->
+        <dependency>
+          <groupId>io.quarkiverse.oidc-proxy</groupId>
+          <artifactId>quarkus-oidc-proxy</artifactId>
+          <version>0.1.2</version>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-resteasy-client-oidc-token-propagation</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
       <id>container</id>
       <properties>
         <quarkus.profile>container</quarkus.profile>
