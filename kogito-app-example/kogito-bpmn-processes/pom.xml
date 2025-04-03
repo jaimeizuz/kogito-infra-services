@@ -21,12 +21,13 @@
   </properties>
 
   <dependencies>
-    <!-- Application-specific dependencies -->
+    <!-- Application-specific dependencies
     <dependency>
       <groupId>org.jaime.kogito.tests</groupId>
       <artifactId>kogito-bpmn-custom-user-task-lifecycle</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    -->
 
     <dependency>
       <groupId>org.jaime.kogito.tests</groupId>
