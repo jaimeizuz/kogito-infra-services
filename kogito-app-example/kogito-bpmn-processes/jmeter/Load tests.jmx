@@ -57,12 +57,12 @@
           </elementProp>
           <elementProp name="iterationsNr" elementType="Argument">
             <stringProp name="Argument.name">iterationsNr</stringProp>
-            <stringProp name="Argument.value">100</stringProp>
+            <stringProp name="Argument.value">500</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="usersNr" elementType="Argument">
             <stringProp name="Argument.name">usersNr</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">40</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rampUp" elementType="Argument">
