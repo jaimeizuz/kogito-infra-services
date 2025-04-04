@@ -13,7 +13,12 @@ receivers:
           metrics_path: '/q/metrics/prometheus'
           scrape_interval: 5s
           static_configs:
-            - targets: [kogito-app-example:8080]
+            - targets: [kogito-bpmn-processes:8080]
+        - job_name: kogito-postgresql-database
+          metrics_path: '/metrics'
+          scrape_interval: 10s
+          static_configs:
+            - targets: [postgres-prometheus-exporter:9187]
 
 exporters:
   otlp/tempo:
