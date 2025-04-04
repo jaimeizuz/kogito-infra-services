@@ -8,7 +8,8 @@
 1. In "kogito-app-example/kogito-bpmn-processes" folder, run `mvn "-Pbamoe-community" "-Pdevelopment" "-Pbamoe-persistence-postgresql" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Pcontainer" clean package` to create the Kogito app Docker image.
 2. In the root folder "kogito-infra-services", run `docker compose --profile full --profile kogito-bpmn-processes up -d`. This will start the full stack except
    Kibana and Grafana. To include them, run `docker compose --profile full --profile kogito-bpmn-processes --profile dashboards up -d`.
-3. Some predefined dashboards are contained in .\grafana folder
+3. Some predefined dashboards are contained in .\grafana folder. Add `JVM Quarkus - Micrometer Metrics-1743773888821.json` for Quarkus metrics, and `PostgreSQL Statistics-1743784368268.json` for PostgreSQL metrics.
+4. Load tests for a simple Test Process are provided as jMeter plan in kogito-app-example\kogito-bpmn-processes\jmeter\Load tests.jmx.
 
 These are the main web applications exposed in the docker-compose:
 - Kogito Management Console: [http://localhost:8280/]()
