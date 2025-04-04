@@ -5,9 +5,10 @@
 2. Access the jBPM Dev-UI in [http://localhost:8080/q/dev-ui/org.jbpm.jbpm-quarkus-devui/process-instances]() to check everything is up and running.
 
 ## Create and run Kogito App (for docker-compose)
-1. In the root folder "kogito-infra-services", run `docker compose --profile full --profile kogito-bpmn-processes up -d`. This will start the full stack except  
+1. In "kogito-app-example/kogito-bpmn-processes" folder, run `mvn "-Pbamoe-community" "-Pdevelopment" "-Pbamoe-persistence-postgresql" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Pcontainer" clean package` to create the Kogito app Docker image.
+2. In the root folder "kogito-infra-services", run `docker compose --profile full --profile kogito-bpmn-processes up -d`. This will start the full stack except
    Kibana and Grafana. To include them, run `docker compose --profile full --profile kogito-bpmn-processes --profile dashboards up -d`.
-2. In "kogito-app-example/kogito-bpmn-processes" folder, run `mvn "-Pbamoe-community" "-Pdevelopment" "-Pbamoe-persistence-postgresql" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Pcontainer" clean package` to create the Kogito app Docker image.
+3. Some predefined dashboards are contained in .\grafana folder
 
 These are the main web applications exposed in the docker-compose:
 - Kogito Management Console: [http://localhost:8280/]()
