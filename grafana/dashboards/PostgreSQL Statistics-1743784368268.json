@@ -1079,16 +1079,18 @@
         "x": 12,
         "y": 8
       },
-      "id": 8,
+      "id": 71,
       "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -1103,7 +1105,7 @@
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
@@ -1112,32 +1114,19 @@
             "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
           },
           "editorMode": "code",
-          "expr": "irate(pg_stat_database_xact_commit{datname=\"$db\"}[5m])",
+          "expr": "pg_stat_database_numbackends{datname=\"$db\"}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "commits",
+          "legendFormat": "{{state}}",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
-          },
-          "editorMode": "code",
-          "expr": "irate(pg_stat_database_xact_rollback{datname=\"$db\"}[5m])",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "rollbacks",
-          "range": true,
-          "refId": "B"
         }
       ],
       "thresholds": [],
-      "title": "Transactions",
+      "title": "Active Connections",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -1269,10 +1258,143 @@
       },
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 12,
         "x": 12,
         "y": 18
+      },
+      "id": 8,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "11.4.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
+          },
+          "editorMode": "code",
+          "expr": "irate(pg_stat_database_xact_commit{datname=\"$db\"}[5m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "commits",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
+          },
+          "editorMode": "code",
+          "expr": "irate(pg_stat_database_xact_rollback{datname=\"$db\"}[5m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "rollbacks",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "title": "Transactions",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 42,
+      "options": {
+        "alertThreshold": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
+          },
+          "editorMode": "code",
+          "expr": "pg_stat_activity_max_tx_duration{server=\"$instance\", datname=\"$db\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "max_tx_duration [{{state}}]",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Longest Transaction",
+      "type": "graph"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
+      },
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
       },
       "id": 20,
       "legend": {
@@ -1373,42 +1495,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 26
-      },
-      "id": 42,
-      "options": {
-        "alertThreshold": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
-          },
-          "editorMode": "code",
-          "expr": "pg_stat_activity_max_tx_duration{server=\"$instance\", datname=\"$db\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "max_tx_duration [{{state}}]",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Longest Transaction",
-      "type": "graph"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_KOGITO_APP EXAMPLES - METRICS (PROMETHEUS)}"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 12,
-        "y": 26
+        "y": 36
       },
       "id": 44,
       "options": {
@@ -1437,7 +1525,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 44
       },
       "id": 50,
       "panels": [],
@@ -1453,7 +1541,7 @@
         "h": 6,
         "w": 17,
         "x": 0,
-        "y": 35
+        "y": 45
       },
       "id": 46,
       "options": {
@@ -1529,7 +1617,7 @@
         "h": 6,
         "w": 7,
         "x": 17,
-        "y": 35
+        "y": 45
       },
       "id": 28,
       "options": {
@@ -1572,7 +1660,7 @@
         "h": 7,
         "w": 17,
         "x": 0,
-        "y": 41
+        "y": 51
       },
       "id": 30,
       "options": {
@@ -1605,7 +1693,7 @@
         "h": 7,
         "w": 7,
         "x": 17,
-        "y": 41
+        "y": 51
       },
       "id": 40,
       "options": {
@@ -1637,7 +1725,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 58
       },
       "id": 38,
       "options": {
@@ -1728,6 +1816,6 @@
   "timezone": "",
   "title": "PostgreSQL Statistics",
   "uid": "behw49nlkz5s0c",
-  "version": 18,
+  "version": 2,
   "weekStart": ""
 }
