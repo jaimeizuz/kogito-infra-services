@@ -1,25 +1,45 @@
 services:
-  kogito-bpmn-processes:
-    container_name: kogito-bpmn-processes
-    image: dev.local/kogito/kogito-bpmn-processes:0.0.1-SNAPSHOT
+  kogito-bpmn-app-secured:
+    container_name: kogito-bpmn-app-secured
+    image: dev.local/kogito/kogito-bpmn-app-secured:1.0.0-SNAPSHOT
     profiles:
-      - kogito-bpmn-processes
-    ports:
-      - '8080:8080'
-      - '8083:8083'
-    cpus: 1
-    mem_limit: 500m
+      - kogito-bpmn-apps
+    network_mode: host
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 700M
+        reservations:
+          memory: 384M
     environment:
+      QUARKUS_HTTP_PORT: "8081"
       KOGITO_PERSISTENCE_PROTO_MARSHALLER: "false"
       QUARKUS_HTTP_CORS_ORIGINS: /.*/
+      GC_CONTAINER_OPTIONS: "-XX:+UseG1GC"
+      # The number if IO threads used to perform IO. This will be automatically set to a reasonable value based on the number of CPU cores if it is not provided.
+      # If this is set to a higher value than the number of Vert.x event loops then it will be capped at the number of event loops.
+      # In general this should be controlled by setting quarkus.vertx.event-loops-pool-size, this setting should only be used if you want to limit the number
+      # of HTTP io threads to a smaller number than the total number of IO threads.
+      # QUARKUS_HTTP_IO_THREADS: 5
+      # The number of event loops. By default, it matches the number of CPUs detected on the system.
+      # QUARKUS_VERTX_EVENT_LOOPS_POOL_SIZE: 5
+      # The maximum number of threads. If this is not specified then it will be automatically sized to the greatest of 8 * the number of available processors and 200.
+      # For example if there are 4 processors the max threads will be 200. If there are 48 processors it will be 384.
+      QUARKUS_THREAD_POOL_MAX_THREADS: 300
       # See https://quarkus.io/guides/datasource#jdbc-configuration
-      QUARKUS_DATASOURCE_JDBC_URL: 'jdbc:postgresql://postgres:5432/kogito?currentSchema=public'
-      QUARKUS_DATASOURCE_REACTIVE_URL: 'postgresql://postgres:5432/kogito?currentSchema=public'
+      QUARKUS_DATASOURCE_JDBC_URL: 'jdbc:postgresql://localhost:5432/kogito'
       QUARKUS_DATASOURCE_USERNAME: kogito-user
       QUARKUS_DATASOURCE_PASSWORD: kogito-pass
       QUARKUS_DATASOURCE_DB_KIND: postgresql
-      QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "false"
-      QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "false"
+      QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "true"
+      QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "true"
+      # XA transaction objects datasource
+      QUARKUS_DATASOURCE__XOS__JDBC_URL: 'jdbc:postgresql://localhost:5432/xa-object-store'
+      QUARKUS_DATASOURCE__XOS__USERNAME: kogito-user
+      QUARKUS_DATASOURCE__XOS__PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE__XOS__DB_KIND: postgresql
+      QUARKUS.DATASOURCE__XOS__JDBC_TRANSACTIONS: disabled
       # The initial size of the pool. Usually you will want to set the initial size to match at least the minimal size, 
       # but this is not enforced so to allow for architectures which prefer a lazy initialization of the connections on boot, 
       # while being able to sustain a minimal pool size after boot. DEFAULT: null
@@ -27,7 +47,7 @@ services:
       # The datasource pool minimum size. DEFAULT: 0
       QUARKUS_DATASOURCE_JDBC_MIN_SIZE: 20
       # The datasource pool maximum size. DEFAULT: 20
-      QUARKUS_DATASOURCE_JDBC_MAX_SIZE: 40
+      QUARKUS_DATASOURCE_JDBC_MAX_SIZE: 80
       # The interval at which we validate idle connections in the background. Set to 0 to disable background validation. DEFAULT: 2M
       # QUARKUS_DATASOURCE_JDBC_BACKGROUND_VALIDATION_INTERVAL: 2M
       # Perform foreground validation on connections that have been idle for longer than the specified interval. DEFAULT: null
@@ -42,9 +62,14 @@ services:
       # QUARKUS_DATASOURCE_JDBC_MAX_LIFETIME: 1M
       # The transaction isolation level. DEFAULT: null
       # QUARKUS_DATASOURCE_JDBC_TRANSACTION_ISOLATION_LEVEL: undefined, none, read-uncommitted, read-committed, repeatable-read, serializable
-      KOGITO_SERVICE_URL: 'http://kogito-bpmn-processes:8080'
-      KOGITO_DATA_INDEX_URL: 'http://localhost:8080'
-      KOGITO_JOBS_SERVICE_URL: 'http://localhost:8080'
+      QUARKUS_TRANSACTION-MANAGER_ENABLE-RECOVERY: "true"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_DATASOURCE: "xos"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_TYPE: "jdbc"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_CREATE-TABLE: "true"
+      KOGITO_SERVICE_URL: 'http://localhost:8081'
+      KOGITO_DATA_INDEX_URL: 'http://localhost:8081'
+      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:8081'
+      KOGITO_JOBS_SERVICE_URL: 'http://localhost:8081'
       # The current chunk size in minutes the scheduler handles, it is used to keep a limit number of jobs scheduled
       # in the in-memory scheduler.
       #KOGITO_JOBS-SERVICE_SCHEDULERCHUNKINMINUTES: 10
@@ -61,6 +86,145 @@ services:
       KOGITO_JOBS-SERVICE_FORCEEXECUTEEXPIREDJOBS: "true"
       KOGITO_JOBS-SERVICE_FORCEEXECUTEEXPIREDJOBSONSERVICESTART: "true"
       QUARKUS_OTEL_LOGS_ENABLED: "true"
+      QUARKUS_OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://localhost:4317
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://localhost:4317
+      #QUARKUS_MICROMETER_EXPORT_OTLP_URL: http://opentelemetry-collector:4318
+      QUARKUS_DATASOURCE_JDBC_TELEMETRY: "true"
+      QUARKUS_DATASOURCE_JDBC_TELEMETRY_ENABLED: "true"
+      QUARKUS_DATASOURCE_JDBC_TRACING: "true"
+      QUARKUS_DATASOURCE_JDBC_TRACING_ENABLED: "true"
+      QUARKUS_LOG_HANDLER_GELF_ENABLED: "true"
+      QUARKUS_LOG_HANDLER_GELF_HOST: localhost
+      QUARKUS_LOG_HANDLER_GELF_PORT: 12201
+      QUARKUS_LOG_HANDLER_GELF_INCLUDE_FULL_MDC: "true"
+      KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_TOPIC: kogito-processinstances-events
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
+      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_TOPIC: kogito-usertaskinstances-events
+      MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_CONNECTOR: smallrye-kafka
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_TOPIC: kogito-processdefinitions-events
+      MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      #KOGITO_ADDON_MESSAGING_INCOMING_DEFAULTNAME: kogito-app-example-incoming-stream
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_TOPIC: sendConfirmationForm
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      #KOGITO_ADDON_MESSAGING_OUTGOING_DEFAULTNAME: kogito-app-example-outgoing-stream
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_TOPIC: receiveConfirmation
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      KOGITO_EVENTS_GROUPING: "false"
+      KIE_FLYWAY_ENABLED: "true"
+      KOGITO_PROCESSES_TRANSACTIONENABLED: "true"
+      KOGITO_USERTASKS_TRANSACTIONENABLED: "true"
+      QUARKUS_REST_CLIENT__DUMMY_REST_SERVICE__URL: http://localhost:19002
+      KOGITO_SECURITY_AUTH_ENABLED: "true"
+      KOGITO_SECURITY_AUTH_IMPERSONATION_ALLOWED_FOR_ROLES: managers
+      QUARKUS_OIDC_DISCOVERY_ENABLED: "true"
+      QUARKUS_OIDC_TENANT_ENABLED: "true"
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://localhost:8480/realms/kie
+      QUARKUS_OIDC_CLIENT_ID: kie-app
+      QUARKUS_OIDC_CREDENTIALS_SECRET: secret
+      QUARKUS_OIDC_APPLICATION_TYPE: service
+      QUARKUS_OIDC_PROXY_EXTERNAL_CLIENT_ID: kie-management-console
+      QUARKUS_HTTP_AUTH_PERMISSION__AUTHENTICATED__PATHS: /*
+      QUARKUS_HTTP_AUTH_PERMISSION__AUTHENTICATED__POLICY: authenticated
+      QUARKUS_HTTP_AUTH_PERMISSION__PUBLIC__PATHS: /q/*,/docs/*
+      QUARKUS_HTTP_AUTH_PERMISSION__PUBLIC__POLICY: permit   
+    depends_on:
+      postgres-kogito-secured:
+        condition: service_started
+      redpanda:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+  kogito-bpmn-app-unsecured:
+    container_name: kogito-bpmn-app-unsecured
+    image: dev.local/kogito/kogito-bpmn-app-unsecured:1.0.0-SNAPSHOT
+    profiles:
+      - kogito-bpmn-apps
+    #network_mode: host
+    ports:
+      - 8082:8082
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 700M
+        reservations:
+          memory: 384M
+    environment:
+      QUARKUS_HTTP_PORT: "8082"
+      KOGITO_PERSISTENCE_PROTO_MARSHALLER: "false"
+      QUARKUS_HTTP_CORS_ORIGINS: /.*/
+      QUARKUS_THREAD-POOL_MAX-THREADS: 150
+      # See https://quarkus.io/guides/datasource#jdbc-configuration
+      #QUARKUS_DATASOURCE_JDBC_URL: 'jdbc:postgresql://localhost:5433/kogito?currentSchema=public'
+      QUARKUS_DATASOURCE_JDBC_URL: 'jdbc:postgresql://postgres-kogito-unsecured:5432/kogito'
+      QUARKUS_DATASOURCE_USERNAME: kogito-user
+      QUARKUS_DATASOURCE_PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_DATASOURCE_JDBC_ENABLE_METRICS: "true"
+      QUARKUS_DATASOURCE_JDBC_METRICS_ENABLED: "true"
+      # XA transaction objects datasource
+      #QUARKUS_DATASOURCE__XOS__JDBC_URL: 'jdbc:postgresql://localhost:5433/xa-object-store?currentSchema=public'
+      QUARKUS_DATASOURCE__XOS__JDBC_URL: 'jdbc:postgresql://postgres-kogito-unsecured:5432/xa-object-store'
+      QUARKUS_DATASOURCE__XOS__USERNAME: kogito-user
+      QUARKUS_DATASOURCE__XOS__PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE__XOS__DB_KIND: postgresql
+      QUARKUS.DATASOURCE__XOS__JDBC_TRANSACTIONS: disabled
+      # The initial size of the pool. Usually you will want to set the initial size to match at least the minimal size, 
+      # but this is not enforced so to allow for architectures which prefer a lazy initialization of the connections on boot, 
+      # while being able to sustain a minimal pool size after boot. DEFAULT: null
+      QUARKUS_DATASOURCE_JDBC_INITIAL_SIZE: 20
+      # The datasource pool minimum size. DEFAULT: 0
+      QUARKUS_DATASOURCE_JDBC_MIN_SIZE: 20
+      # The datasource pool maximum size. DEFAULT: 20
+      QUARKUS_DATASOURCE_JDBC_MAX_SIZE: 80
+      # The interval at which we validate idle connections in the background. Set to 0 to disable background validation. DEFAULT: 2M
+      # QUARKUS_DATASOURCE_JDBC_BACKGROUND_VALIDATION_INTERVAL: 2M
+      # Perform foreground validation on connections that have been idle for longer than the specified interval. DEFAULT: null
+      # QUARKUS_DATASOURCE_JDBC_FOREGROUND_VALIDATION_INTERVAL: 15S
+      # The timeout before cancelling the acquisition of a new connection. DEFAULT: 5S
+      # QUARKUS_DATASOURCE_JDBC_ACQUISITION_TIMEOUT: 5S
+      # The interval at which we check for connection leaks. DEFAULT: disabled
+      # QUARKUS_DATASOURCE_JDBC_LEAK_DETECTION_INTERVAL: 10M
+      # The interval at which we try to remove idle connections. DEFAULT: 5M
+      # QUARKUS_DATASOURCE_JDBC_IDLE_REMOVAL_INTERVAL: 5M
+      # The max lifetime of a connection. DEFAULT: disabled
+      # QUARKUS_DATASOURCE_JDBC_MAX_LIFETIME: 1M
+      # The transaction isolation level. DEFAULT: null
+      # QUARKUS_DATASOURCE_JDBC_TRANSACTION_ISOLATION_LEVEL: undefined, none, read-uncommitted, read-committed, repeatable-read, serializable
+      QUARKUS_TRANSACTION-MANAGER_ENABLE-RECOVERY: "true"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_DATASOURCE: "xos"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_TYPE: "jdbc"
+      QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_CREATE-TABLE: "true"
+      KOGITO_SERVICE_URL: 'http://localhost:8082'
+      KOGITO_DATA_INDEX_URL: 'http://localhost:8082'
+      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:8082'
+      KOGITO_JOBS_SERVICE_URL: 'http://localhost:8082'
+      # The current chunk size in minutes the scheduler handles, it is used to keep a limit number of jobs scheduled
+      # in the in-memory scheduler.
+      #KOGITO_JOBS-SERVICE_SCHEDULERCHUNKINMINUTES: 10
+      # The interval the job loading method runs to fetch the persisted jobs from the repository.
+      #KOGITO_JOBS-SERVICE_LOADJOBINTERVALINMINUTES: 10
+      # The interval based on the current time the job loading method uses to fetch jobs "FROM (now -
+      # {@link #loadJobFromCurrentTimeIntervalInMinutes}) TO {@link #schedulerChunkInMinutes}"
+      #KOGITO_JOBS-SERVICE_LOADJOBFROMCURRENTTIMEINTERVALINMINUTES: 0
+      # Number of retries configured for the periodic jobs loading procedure. Every time the procedure is started this
+      # value is considered.
+      KOGITO_JOBS-SERVICE_LOADJOBRETRIES: 3
+      # Error strategy to apply when the periodic jobs loading procedure has exceeded the jobLoadReties. NONE, FAIL_SERVICE
+      #KOGITO_JOBS-SERVICE_LOADJOBERRORSTRATEGY: FAIL_SERVICE
+      KOGITO_JOBS-SERVICE_FORCEEXECUTEEXPIREDJOBS: "true"
+      KOGITO_JOBS-SERVICE_FORCEEXECUTEEXPIREDJOBSONSERVICESTART: "true"
+      QUARKUS_OTEL_LOGS_ENABLED: "true"
+      #QUARKUS_OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://localhost:4317
+      #QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://localhost:4317
       QUARKUS_OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: http://opentelemetry-collector:4317
       QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://opentelemetry-collector:4317
       #QUARKUS_MICROMETER_EXPORT_OTLP_URL: http://opentelemetry-collector:4318
@@ -69,58 +233,55 @@ services:
       QUARKUS_DATASOURCE_JDBC_TRACING: "true"
       QUARKUS_DATASOURCE_JDBC_TRACING_ENABLED: "true"
       QUARKUS_LOG_HANDLER_GELF_ENABLED: "true"
+      #QUARKUS_LOG_HANDLER_GELF_HOST: localhost
       QUARKUS_LOG_HANDLER_GELF_HOST: logstash
       QUARKUS_LOG_HANDLER_GELF_PORT: 12201
       QUARKUS_LOG_HANDLER_GELF_INCLUDE_FULL_MDC: "true"
+      #KAFKA_BOOTSTRAP_SERVERS: localhost:9092
       KAFKA_BOOTSTRAP_SERVERS: redpanda:9093
-      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_TOPIC: kogito-processinstances-events
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
       MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_CONNECTOR: smallrye-kafka
       MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_TOPIC: kogito-usertaskinstances-events
       MP_MESSAGING_OUTGOING_KOGITO-USERTASKINSTANCES-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_BOOTSTRAP_SERVERS: redpanda:9093
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_CONNECTOR: smallrye-kafka
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_TOPIC: kogito-processdefinitions-events
       MP_MESSAGING_OUTGOING_KOGITO-PROCESSDEFINITIONS-EVENTS_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
       #KOGITO_ADDON_MESSAGING_INCOMING_DEFAULTNAME: kogito-app-example-incoming-stream
       #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_TOPIC: sendConfirmationForm
-      MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_TOPIC: sendConfirmationForm
+      #MP_MESSAGING_INCOMING_KOGITO-INCOMING-STREAM_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
       #KOGITO_ADDON_MESSAGING_OUTGOING_DEFAULTNAME: kogito-app-example-outgoing-stream
       #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_BOOTSTRAP_SERVERS: redpanda:9093
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_CONNECTOR: smallrye-kafka
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_TOPIC: receiveConfirmation
-      MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      #KOGITO_ADDON_MONITORING_ELASTIC_HOST: http://elasticsearch:9200
-      #KOGITO_ADDON_MONITORING_ELASTIC_INDEX: kogito-bpmn-processes
-      #KOGITO_ADDON_MONITORING_ELASTIC_AUTOCREATEINDEX: "false"
-      #KOGITO_ADDON_MONITORING_ELASTIC_STEP: 3s
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_CONNECTOR: smallrye-kafka
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_TOPIC: receiveConfirmation
+      #MP_MESSAGING_OUTGOING_KOGITO-OUTGOING-STREAM_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
       KOGITO_EVENTS_GROUPING: "false"
       KIE_FLYWAY_ENABLED: "true"
       KOGITO_PROCESSES_TRANSACTIONENABLED: "true"
       KOGITO_USERTASKS_TRANSACTIONENABLED: "true"
+      #QUARKUS_REST_CLIENT__DUMMY_REST_SERVICE__URL: http://localhost:19002
       QUARKUS_REST_CLIENT__DUMMY_REST_SERVICE__URL: http://wiremock-studio:9002
     depends_on:
-      postgres:
+      postgres-kogito-unsecured:
         condition: service_started
       redpanda:
         condition: service_healthy
   bamoe-maven-repository:
     container_name: bamoe-maven-repository
     #image: apache/incubator-kie-kogito-management-console:10.0.0
-    image: jizuzquiza/bamoe-maven-repository:9.1.2-ibm-0006
+    image: quay.io/bamoe/maven-repository:9.2.0-ibm-0004
     profiles:
+      - bamoe-maven-repository
       - full
     ports:
       - '8800:8080'
   kogito-management-console:
     container_name: kogito-management-console
     image: apache/incubator-kie-kogito-management-console:main
-    #image: jizuzquiza/bamoe-management-console:9.1.2-ibm-0006
+    #image: quay.io/bamoe/management-console:9.2.0-ibm-0004
     profiles:
       - full
       - kogito-consoles
@@ -130,18 +291,10 @@ services:
     #  keycloak:
     #    condition: service_healthy
     environment:
-      KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: >-
-        http://localhost:8480/realms/kogito/.well-known/openid-configuration
-      KOGITO_CONSOLES_KEYCLOAK_URL: 'http://localhost:8480'
-      KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
-      KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "PROD"
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://localhost:8080/graphql
-      RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: "Active,Ready,Reserved,Completed,Aborted,Skipped"
-      RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: "Active,Ready,Reserved"
-  postgres:
-    container_name: postgres
-    image: 'postgres:16.1-alpine3.19'
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: kie-management-console
+  postgres-kogito-secured:
+    container_name: postgres-kogito-secured
+    image: 'postgres:16.8-alpine3.21'
     profiles:
       - infra
       - example
@@ -150,7 +303,10 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - './sql:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-kogito-secured:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-kogito-secured/postgresql.conf:/etc/postgresql.conf'
+    command:
+      postgres -c config_file=/etc/postgresql.conf
     healthcheck:
       test:
         - CMD
@@ -166,8 +322,80 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+  postgres-kogito-unsecured:
+    container_name: postgres-kogito-unsecured
+    image: 'postgres:16.8-alpine3.21'
+    profiles:
+      - infra
+      - example
+      - full
+      - kogito-database
+    ports:
+      - '5433:5432'
+    volumes:
+      - './sql/postgres-kogito-unsecured:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-kogito-unsecured/postgresql.conf:/etc/postgresql.conf'
+    command:
+      postgres -c config_file=/etc/postgresql.conf
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - kogito
+        - '-U'
+        - kogito-user
+      timeout: 45s
+      interval: 10s
+      retries: 50
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  postgres-supporting-services:
+    container_name: postgres-supporting-services
+    image: 'postgres:16.8-alpine3.21'
+    profiles:
+      - infra
+      - example
+      - full
+      - kogito-database
+    ports:
+      - '5434:5432'
+    volumes:
+      - './sql/postgres-supporting-services:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-supporting-services/postgresql.conf:/etc/postgresql.conf'
+    command:
+      postgres -c config_file=/etc/postgresql.conf
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - kogito
+        - '-U'
+        - kogito-user
+      timeout: 45s
+      interval: 10s
+      retries: 50
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  postgres-prometheus-exporter:
+    # See https://github.com/prometheus-community/postgres_exporter
+    container_name: postgres-prometheus-exporter
+    image: 'quay.io/prometheuscommunity/postgres-exporter:v0.17.1'
+    profiles:
+      - full
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_URI: "postgres-kogito-unsecured:5432?sslmode=disable"
+      DATA_SOURCE_USER: postgres
+      DATA_SOURCE_PASS: postgres
   pgadmin:
-    image: dpage/pgadmin4:8.2
+    image: dpage/pgadmin4:9.1
     container_name: pgadmin
     profiles:
       - full
@@ -193,8 +421,7 @@ services:
     container_name: mysql
     image: jizuzquiza/mysql:8.0.16
     profiles:
-      - full
-      - business-services
+      - mysql
     environment:
       MYSQL_ROOT_PASSWORD: password@1
     volumes:
@@ -211,23 +438,23 @@ services:
     ports:
       - '8480:8080'
     depends_on:
-      postgres:
+      postgres-supporting-services:
         condition: service_healthy
     volumes:
-      #- ./keycloak/kogito-realm.json:/tmp/kogito-realm.json
       - ./keycloak:/opt/keycloak/data/import:z
     healthcheck:
       test:
-        - CMD
-        - curl
-        - '-f'
-        - 'http://localhost:8080/realms/kogito'
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost:9000\r\nConnection: close\r\n\r\n' >&3;cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1",
+        ]
       interval: 2s
       timeout: 1s
       retries: 50
     environment:
+      KC_HEALTH_ENABLED: "true"
       DB_VENDOR: POSTGRES
-      DB_ADDR: postgresql
+      DB_ADDR: postgres-supporting-services
       DB_DATABASE: keycloak
       DB_USER: kogito-user
       DB_SCHEMA: public
@@ -323,6 +550,7 @@ services:
     # mount the local directory that contains your license key to the container.
     # give Redpanda Console read access to the license.
     volumes:
+    # Remove ro?
       - ./license:/etc/redpanda:ro
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml && echo "$$CONSOLE_ROLEBINDINGS_CONFIG_FILE" > /tmp/role-bindings.yml && /app/console'
@@ -435,6 +663,7 @@ services:
       - '15680:55680'
     depends_on:
       - jaeger
+      - logstash
   microsim:
     container_name: microsim
     image: 'yurishkuro/microsim:0.3.0'
@@ -457,8 +686,7 @@ services:
     container_name: grafana
     image: grafana/grafana:11.4.0
     profiles:
-      - full
-      - monitoring
+      - dashboards
     volumes:
       - './grafana/grafana.ini:/etc/grafana/grafana.ini:z'
       - >-
@@ -468,14 +696,14 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_HOST=postgres-supporting-services:5432
       - GF_DATABASE_NAME=grafana
       - GF_DATABASE_USER=postgres
       - GF_DATABASE_PASSWORD=postgres
     ports:
       - '3000:3000'
     depends_on:
-      postgres:
+      postgres-supporting-services:
         condition: service_healthy
   init-tempo:
     image: grafana/tempo:2.7.0
@@ -496,6 +724,7 @@ services:
       - monitoring
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
+    # Remove :z?
       - ./tempo/tempo.yaml:/etc/tempo.yaml:z
       - ./tempo/data:/var/tempo:z
     ports:
@@ -551,7 +780,7 @@ services:
       XPACK_REPORTING_ENCRIPTIONKEY: 3739d02dd358ccb3915cbbd89a6f5150
       XPACK_SECURITY_ENCRIPTIONKEY: 5c4eaf77fdde275944bb1a876a9af87a
     profiles:
-      - full
+      - dashboards
       - elk
     ports:
       - "5601:5601"
@@ -570,7 +799,6 @@ services:
   castlemock:
     container_name: castlemock
     profiles:
-      - full
       - mock-server
     image: castlemock/castlemock:v1.63
     ports:

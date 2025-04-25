@@ -159,7 +159,8 @@
 										"exec": [
 											"pm.collectionVariables.set(\"process-instance-id\", pm.response.json().data.ProcessInstances[0].id);"
 										],
-										"type": "text/javascript"
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -179,7 +180,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"operationName\": \"getProcessInstances\",\r\n    \"variables\": {\r\n        \"where\": {\r\n            \"parentProcessInstanceId\": {\r\n                \"isNull\": true\r\n            },\r\n            \"state\": {\r\n                \"in\": [\r\n                    \"ACTIVE\"\r\n                ]\r\n            }\r\n        },\r\n        \"offset\": 0,\r\n        \"limit\": 10,\r\n        \"orderBy\": {\r\n            \"lastUpdate\": \"DESC\"\r\n        }\r\n    },\r\n    \"query\": \"query getProcessInstances($where: ProcessInstanceArgument, $offset: Int, $limit: Int, $orderBy: ProcessInstanceOrderBy) {\\n  ProcessInstances(where: $where, pagination: {offset: $offset, limit: $limit}, orderBy: $orderBy) {\\n    id\\n    processId\\n    processName\\n    parentProcessInstanceId\\n    rootProcessInstanceId\\n    roles\\n    state\\n    start\\n    lastUpdate\\n    addons\\n    businessKey\\n    serviceUrl\\n    error {\\n      nodeDefinitionId\\n      message\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}"
+									"raw": "{\r\n    \"operationName\": \"getProcessInstances\",\r\n    \"variables\": {\r\n        \"where\": {\r\n            \"parentProcessInstanceId\": {\r\n                \"isNull\": true\r\n            },\r\n            \"state\": {\r\n                \"in\": [\r\n                    \"ACTIVE\"\r\n                ]\r\n            }\r\n        },\r\n        \"offset\": 0,\r\n        \"limit\": 10,\r\n        \"orderBy\": {\r\n            \"lastUpdate\": \"DESC\"\r\n        }\r\n    },\r\n    \"query\": \"query getProcessInstances($where: ProcessInstanceArgument, $offset: Int, $limit: Int, $orderBy: ProcessInstanceOrderBy) {\\n  ProcessInstances(where: $where, pagination: {offset: $offset, limit: $limit}, orderBy: $orderBy) {\\n    id\\n    processId\\n  version\\n  processName\\n    parentProcessInstanceId\\n    rootProcessInstanceId\\n    roles\\n    state\\n    start\\n    lastUpdate\\n    addons\\n    businessKey\\n    serviceUrl\\n    error {\\n      nodeDefinitionId\\n      message\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}"
 								},
 								"url": {
 									"raw": "{{bamoe-localhost}}/graphql",
@@ -211,13 +212,47 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"operationName\": \"getProcessInstanceById\",\r\n    \"variables\": {\r\n        \"id\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"query getProcessInstanceById($id: String) {\\n  ProcessInstances(where: {id: {equal: $id}}) {\\n    id\\n    processId\\n    processName\\n    businessKey\\n    parentProcessInstanceId\\n    parentProcessInstance {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    roles\\n    variables\\n    state\\n    start\\n    lastUpdate\\n    end\\n    addons\\n    endpoint\\n    addons\\n    serviceUrl\\n    source\\n    error {\\n      nodeDefinitionId\\n      message\\n      __typename\\n    }\\n    childProcessInstances {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    nodes {\\n      id\\n      nodeId\\n      name\\n      enter\\n      exit\\n      type\\n      definitionId\\n      __typename\\n    }\\n    milestones {\\n      id\\n      name\\n      status\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}"
+									"raw": "{\r\n    \"operationName\": \"getProcessInstanceById\",\r\n    \"variables\": {\r\n        \"id\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"query getProcessInstanceById($id: String) {\\n  ProcessInstances(where: {id: {equal: $id}}) {\\n    id\\n    processId\\n    processName\\n    businessKey\\n    parentProcessInstanceId\\n    parentProcessInstance {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    roles\\n    variables\\n    state\\n    start\\n    lastUpdate\\n    end\\n     endpoint\\n    addons\\n    serviceUrl\\n       error {\\n      nodeDefinitionId\\n      message\\n      __typename\\n    }\\n    childProcessInstances {\\n      id\\n      processName\\n      businessKey\\n      __typename\\n    }\\n    nodes {\\n      id\\n      nodeId\\n      name\\n      enter\\n      exit\\n      type\\n      definitionId\\n      __typename\\n    }\\n    milestones {\\n      id\\n      name\\n      status\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}"
 								},
 								"url": {
-									"raw": "{{bamoe-localhost}}/graphql",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/graphql",
 									"host": [
-										"{{bamoe-localhost}}"
+										"{{kogito-service-host}}"
 									],
+									"port": "{{kogito-service-port}}",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Abort Process Instance Info",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "default"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"operationName\": \"abortProcessInstance\",\r\n    \"variables\": {\r\n        \"processId\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"mutation abortProcessInstance($processId: String) {\\n  ProcessInstanceAbort(id: $processId)\\n}\\n\"\r\n}"
+								},
+								"url": {
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/graphql",
+									"host": [
+										"{{kogito-service-host}}"
+									],
+									"port": "{{kogito-service-port}}",
 									"path": [
 										"graphql"
 									]
@@ -244,7 +279,8 @@
 											"            .replaceAll(\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\", \"\"))\r",
 											"});"
 										],
-										"type": "text/javascript"
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -267,10 +303,11 @@
 									"raw": "{\r\n    \"operationName\": \"getProcessInstanceSVG\",\r\n    \"variables\": {\r\n        \"processId\": \"{{process-instance-id}}\"\r\n    },\r\n    \"query\": \"query getProcessInstanceSVG($processId: String) {\\n  ProcessInstances(where: {id: {equal: $processId}}) {\\n    diagram\\n  }\\n}\\n\"\r\n}"
 								},
 								"url": {
-									"raw": "{{bamoe-localhost}}/graphql",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/graphql",
 									"host": [
-										"{{bamoe-localhost}}"
+										"{{kogito-service-host}}"
 									],
+									"port": "{{kogito-service-port}}",
 									"path": [
 										"graphql"
 									]
@@ -478,7 +515,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"candidateData\": {\r\n    \"name\": \"Jon\",\r\n    \"lastName\": \"Snow\",\r\n    \"email\": \"jon@snow.org\",\r\n    \"experience\": 5,\r\n    \"skills\": [\"Java\", \"Kogito\", \"Fencing\"]\r\n  },\r\n  \"expirationTime\" : \"PT120S\",\r\n  \"throwException\" : false\r\n}",
+									"raw": "{\r\n  \"candidateData\": {\r\n    \"name\": \"Jon\",\r\n    \"lastName\": \"Snow\",\r\n    \"email\": \"jon@snow.org\",\r\n    \"experience\": 5,\r\n    \"skills\": [\"Java\", \"Kogito\", \"Fencing\"]\r\n  },\r\n  \"needMgmtApproval\" : false,\r\n  \"expirationTime\" : \"PT1200S\",\r\n  \"throwException\" : true,\r\n  \"workitemType\" : \"ST\",\r\n  \"errorStrategy\" : \"ABORT\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -493,6 +530,61 @@
 									"port": "{{kogito-service-port}}",
 									"path": [
 										"hiring"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Start Test Process",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"process-instance-id\", JSON.parse(pm.response.text())[\"id\"]);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "x-kogito-correlationkey",
+										"value": "12345",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/TestProcess",
+									"host": [
+										"{{kogito-service-host}}"
+									],
+									"port": "{{kogito-service-port}}",
+									"path": [
+										"TestProcess"
 									]
 								}
 							},
@@ -783,7 +875,8 @@
 									"script": {
 										"exec": [
 											"pm.collectionVariables.set(\"task-instance-name\", JSON.parse(pm.response.text()).pop()[\"taskName\"]);\r",
-											"pm.collectionVariables.set(\"task-instance-id\", JSON.parse(pm.response.text()).pop()[\"id\"]);"
+											"pm.collectionVariables.set(\"task-instance-id\", JSON.parse(pm.response.text()).pop()[\"id\"]);\r",
+											"pm.collectionVariables.set(\"kogito-service-process-id\", JSON.parse(pm.response.text()).pop()[\"metadata\"][\"ProcessId\"]);"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -791,10 +884,20 @@
 								}
 							],
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access-token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/usertasks/instance?user=jdoe",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/usertasks/instance?user={{user-id}}",
 									"host": [
 										"{{kogito-service-host}}"
 									],
@@ -806,7 +909,7 @@
 									"query": [
 										{
 											"key": "user",
-											"value": "jdoe"
+											"value": "{{user-id}}"
 										}
 									]
 								}
@@ -1143,7 +1246,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"transitionId\" : \"complete\",\r\n    \"data\" : {\r\n        \"validData\" : false\r\n    }\r\n}",
+									"raw": "{\r\n    \"transitionId\" : \"complete\",\r\n    \"data\" : {\r\n        \"var1\" : \"value1\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1292,7 +1395,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"validData\" : false\r\n}",
+									"raw": "{\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1445,7 +1548,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n   \"validCountries\" : true\r\n}",
+									"raw": "{\r\n   \"approve\" : true\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1453,16 +1556,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/{{kogito-service-process-id}}/{{process-instance-id}}/{{task-instance-name}}/{{task-instance-id}}?user=jdoe",
+									"raw": "{{kogito-service-host}}:{{kogito-service-port}}/usertasks/instance/{{task-instance-id}}/outputs?user=jdoe",
 									"host": [
 										"{{kogito-service-host}}"
 									],
 									"port": "{{kogito-service-port}}",
 									"path": [
-										"{{kogito-service-process-id}}",
-										"{{process-instance-id}}",
-										"{{task-instance-name}}",
-										"{{task-instance-id}}"
+										"usertasks",
+										"instance",
+										"{{task-instance-id}}",
+										"outputs"
 									],
 									"query": [
 										{
@@ -1858,7 +1961,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{kogito-service-host}}:{{kogito-service-port}}/q/logging-manager?loggerName=org.kie.kogito",
+							"raw": "{{kogito-service-host}}:{{kogito-service-port}}/q/logging-manager?loggerName=org.kie.kogito.jobs.service",
 							"host": [
 								"{{kogito-service-host}}"
 							],
@@ -1870,7 +1973,7 @@
 							"query": [
 								{
 									"key": "loggerName",
-									"value": "org.kie.kogito"
+									"value": "org.kie.kogito.jobs.service"
 								}
 							]
 						}
@@ -1915,7 +2018,7 @@
 								},
 								{
 									"key": "loggerName",
-									"value": "org.wildfly.security.auth.realm.token.validator",
+									"value": "io.narayana",
 									"type": "text"
 								}
 							]
@@ -2485,7 +2588,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"query\": \"{GetAllProcessInstancesState {eventId, processInstanceId, eventType, eventDate}}\"\r\n}",
+							"raw": "{\r\n    \"query\": \"{ GetAllProcessInstancesStateByProcessId (processId : \\\"travellers\\\") { eventId, eventDate, processType, processId, processVersion, parentProcessInstanceId, rootProcessId, rootProcessInstanceId, processInstanceId, businessKey, eventType, outcome, state, slaDueDate, roles} }\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -8710,6 +8813,177 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "OIDC requests",
+			"item": [
+				{
+					"name": "Get Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"access-token\", JSON.parse(pm.response.text())[\"access_token\"]);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"jwt\", jsonData.access_token);\r",
+									"\r",
+									" function parseJwt (token,part) {\r",
+									"   var base64Url = token.split('.')[part];\r",
+									"   var words = CryptoJS.enc.Base64.parse(base64Url);\r",
+									"   var jsonPayload = CryptoJS.enc.Utf8.stringify(words);\r",
+									"   return  JSON.parse(jsonPayload);\r",
+									"};\r",
+									"\r",
+									"var jwtInfo ={};\r",
+									"jwtInfo.size = jsonData.access_token.length;\r",
+									"jwtInfo.header = parseJwt(jsonData.access_token,0);\r",
+									"jwtInfo.payload = parseJwt(jsonData.access_token,1);\r",
+									"jwtInfo.roles = jwtInfo.payload.realm_access.roles.join(\",\");\r",
+									"jwtInfo.signature = jsonData.access_token.split('.')[2];\r",
+									"jwtInfo.expires = ((jwtInfo.payload.exp-Date.now().valueOf()/1000)/60).toFixed(1);\r",
+									"console.log(jwtInfo);\r",
+									"\r",
+									"var template = `\r",
+									"<b>JWT  Size:{{response.size}}Bytes. Expires in {{response.expires}} minutes</b><br>\r",
+									"<p><b>Roles</b></p>\r",
+									"<p>{{response.roles}}</p>\r",
+									"<b>Header </b>\r",
+									"    <table>\r",
+									"        <tr><th>Property</th><th>Value</th></tr>\r",
+									"        {{#each response.header}}\r",
+									"            <tr><td>{{@key}}</td><td>{{.}}</td></tr>\r",
+									"        {{/each}}\r",
+									"    </table>\r",
+									"<b>Payload</b>\r",
+									"    <table>\r",
+									"        <tr><th>Property</th><th>Value</th></tr>\r",
+									"        {{#each response.payload}}\r",
+									"            <tr><td>{{@key}}</td><td>{{.}}</td></tr>\r",
+									"        {{/each}}\r",
+									"    </table>\r",
+									" <b>Claims</b>\r",
+									"    <table bgcolor=\"#FFFFFF\">\r",
+									"        <tr><th>Claim</th><th>Value</th></tr>\r",
+									"        {{#each response.payload.Claims}}\r",
+									"            <tr>\r",
+									"                {{#each this}}\r",
+									"                    <td>{{.}}</td>       \r",
+									"                {{/each}}\r",
+									"            </tr>\r",
+									"        {{/each}}\r",
+									"    </table>\r",
+									"  <i>signature:{{response.signature}}</i>\r",
+									"`;\r",
+									"pm.visualizer.set(template, {response: jwtInfo});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{keycloak-client-id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{keycloak-secret}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{user-id}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{user-password}}",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "openid",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak-host}}:{{keycloak-port}}/realms/{{keycloak-realm-id}}/protocol/openid-connect/token",
+							"host": [
+								"{{keycloak-host}}"
+							],
+							"port": "{{keycloak-port}}",
+							"path": [
+								"realms",
+								"{{keycloak-realm-id}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{keycloak-host}}:{{keycloak-port}}/realms/{{keycloak-realm-id}}/protocol/openid-connect/userinfo",
+							"host": [
+								"{{keycloak-host}}"
+							],
+							"port": "{{keycloak-port}}",
+							"path": [
+								"realms",
+								"{{keycloak-realm-id}}",
+								"protocol",
+								"openid-connect",
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -8777,7 +9051,12 @@
 		},
 		{
 			"key": "user-id",
-			"value": "jdoe",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "user-password",
+			"value": "admin",
 			"type": "string"
 		},
 		{
@@ -8823,6 +9102,41 @@
 		{
 			"key": "query-get-process-instances-by-process-id-and-date",
 			"value": "{ProcessInstances(where:{and:{processId:{equal:\"kogito-service-process-id\"},start :{greaterThan: \"2024-10-02T17:00\"},state:{equal:ACTIVE}}},orderBy:{start:ASC}){id,processId,processName,start,end,state}}",
+			"type": "string"
+		},
+		{
+			"key": "bamoe-localhost",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access-token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak-host",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak-port",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak-realm-id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak-client-id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak-secret",
+			"value": "",
 			"type": "string"
 		}
 	]

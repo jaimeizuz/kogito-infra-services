@@ -6,14 +6,24 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
   # Data sources: metrics
-  prometheus:
+  prometheus/kogitoapps:
     config:
       scrape_configs:
-        - job_name: kogito-app-example
+        - job_name: kogito-bpmn-apps
           metrics_path: '/q/metrics/prometheus'
           scrape_interval: 5s
           static_configs:
-            - targets: [kogito-app-example:8080]
+            # Need to find a way to get metrics from a docker service with network_mode = host
+            #- targets: [kogito-bpmn-app-unsecured:8082,kogito-bpmn-app-secured:8081]
+            - targets: [kogito-bpmn-app-unsecured:8082]
+  prometheus/kogitodatabase:
+    config:
+      scrape_configs:
+        - job_name: kogito-postgresql-database
+          metrics_path: '/metrics'
+          scrape_interval: 10s
+          static_configs:
+            - targets: [postgres-prometheus-exporter:9187]
 
 exporters:
   otlp/tempo:
@@ -59,7 +69,7 @@ service:
     # The exporter name in this pipeline must match the spanmetrics.metrics_exporter name.
     # The receiver is just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
     metrics:
-      receivers: [otlp,prometheus]
+      receivers: [otlp,prometheus/kogitoapps,prometheus/kogitodatabase]
     #  processors: [batch]
       exporters: [prometheus]
     logs:
