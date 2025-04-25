@@ -17,7 +17,6 @@ CREATE DATABASE keycloak
     CONNECTION LIMIT = -1;
 
 GRANT ALL PRIVILEGES ON DATABASE postgres TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE kogito TO "kogito-user";
 GRANT ALL PRIVILEGES ON DATABASE keycloak TO "kogito-user";
 GRANT ALL PRIVILEGES ON DATABASE keycloak TO postgres;
 
