@@ -27,13 +27,13 @@
       <artifactId>kogito-bpmn-custom-user-task-lifecycle</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    -->
 
     <dependency>
       <groupId>org.jaime.kogito.tests</groupId>
       <artifactId>kogito-bpmn-custom-user-task-event-listener</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    -->
 
     <!-- jBPM and Drools -->
     <dependency>
