@@ -303,8 +303,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - './sql:/docker-entrypoint-initdb.d:Z'
-      - './sql/postgresql.conf:/etc/postgresql.conf'
+      - './sql/postgres-kogito-secured:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-kogito-secured/postgresql.conf:/etc/postgresql.conf'
     command:
       postgres -c config_file=/etc/postgresql.conf
     healthcheck:
@@ -333,8 +333,8 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - './sql:/docker-entrypoint-initdb.d:Z'
-      - './sql/postgresql.conf:/etc/postgresql.conf'
+      - './sql/postgres-kogito-unsecured:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-kogito-unsecured/postgresql.conf:/etc/postgresql.conf'
     command:
       postgres -c config_file=/etc/postgresql.conf
     healthcheck:
@@ -363,8 +363,8 @@ services:
     ports:
       - '5434:5432'
     volumes:
-      - './sql:/docker-entrypoint-initdb.d:Z'
-      - './sql/postgresql.conf:/etc/postgresql.conf'
+      - './sql/postgres-supporting-services:/docker-entrypoint-initdb.d:Z'
+      - './sql/postgres-supporting-services/postgresql.conf:/etc/postgresql.conf'
     command:
       postgres -c config_file=/etc/postgresql.conf
     healthcheck:
