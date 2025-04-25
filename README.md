@@ -1,15 +1,18 @@
 # Kogito and Infrastructure services
 
 ## Create and run Kogito App (for quarkus:dev execution)
-1. In "kogito-app-example/kogito-bpmn-processes" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pembedded-postgresql" "-Pdevelopment" clean quarkus:dev`
+1. In "kogito-app-example/kogito-bpmn-app-unsecured" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pembedded-postgresql" "-Pdevelopment" clean quarkus:dev`
 2. Access the jBPM Dev-UI in [http://localhost:8080/q/dev-ui/org.jbpm.jbpm-quarkus-devui/process-instances]() to check everything is up and running.
 
-## Create and run Kogito App (for docker-compose)
-1. In "kogito-app-example/kogito-bpmn-processes" folder, run `mvn "-Pbamoe-community" "-Pdevelopment" "-Pbamoe-persistence-postgresql" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Pcontainer" clean package` to create the Kogito app Docker image.
-2. In the root folder "kogito-infra-services", run `docker compose --profile full --profile kogito-bpmn-processes up -d`. This will start the full stack except
-   Kibana and Grafana. To include them, run `docker compose --profile full --profile kogito-bpmn-processes --profile dashboards up -d`.
+## Build the Kogito images
+1. In "kogito-app-example/kogito-bpmn-unsecured-app" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pbamoe-audit" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Pcontainer" clean package` to create the Kogito app Docker image.
+2. In "kogito-app-example/kogito-bpmn-secured-app" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pbamoe-audit" "-Pbamoe-kafka-events" "-Popentelemetry-traces-logs-metrics" "-Poidc-security" "-Pcontainer" clean package` to create the Kogito app Docker image.
+
+## Run the Compose
+2. In the root folder "kogito-infra-services", run `docker compose --profile full --profile kogito-bpmn-apps up -d`. This will start the full stack except
+   Kibana and Grafana. To include them, run `docker compose --profile full --profile kogito-bpmn-apps --profile dashboards up -d`.
 3. Some predefined dashboards are contained in .\grafana folder. Add `JVM Quarkus - Micrometer Metrics-1743773888821.json` for Quarkus metrics, and `PostgreSQL Statistics-1743784368268.json` for PostgreSQL metrics.
-4. Load tests for a simple Test Process are provided as jMeter plan in kogito-app-example\kogito-bpmn-processes\jmeter\Load tests.jmx.
+4. Load tests for a simple Test Process are provided as jMeter plan in kogito-app-example\kogito-bpmn-app-unsecured\jmeter\Load tests.jmx.
 
 These are the main web applications exposed in the docker-compose:
 - Kogito Management Console: [http://localhost:8280/]()
@@ -19,9 +22,52 @@ These are the main web applications exposed in the docker-compose:
 - Kibana: [http://localhost:5601/]()
 - Grafana: [http://localhost:3000]()
 
+## Access Kogito Management Console and connect to the runtimes
+1. Access the Kogito Management Console from the web browser: [http://localhost:8280/]().
+2. Add the secured runtime using the following data:
+   - Alias: `kogito secured app`
+   - URL: `http://localhost:8081`
+   - Mark the "Force login prompt (for secured runtimes only)" checkbox.
+   - User: `jdoe`
+   - Password: `jdoe`
+3. Add the non-secured runtime using the following data:
+   - Alias: `kogito non-secured app`
+   - URL: `http://localhost:8082`
+
+## Start a process instance in the secured runtime
+1. Execute the following request to get the access_token:
+```
+curl --location 'http://localhost:8480/realms/kie/protocol/openid-connect/token' \
+    --header 'Content-Type: application/x-www-form-urlencoded' \
+    --header 'Accept: application/json' \
+    --data-urlencode 'client_id=kie-app' \
+    --data-urlencode 'client_secret=secret' \
+    --data-urlencode 'grant_type=password' \
+    --data-urlencode 'username=jdoe' \
+    --data-urlencode 'password=jdoe' \
+    --data-urlencode 'scope=openid'
+```
+
+2. Start the process instance by sending this HTTP request: \
+```
+    curl --location 'http://localhost:8081/TestProcess' \
+        --header 'Accept: application/json' \
+        --header 'Content-Type: application/json' \
+        --header 'x-kogito-correlationkey: 12345' \
+        --data '{
+        }'
+```
+
+3. Retrieve user tasks by sending this HTTP request with the access token (note that no user tasks will be returned in case there's no Auth present):
+```
+curl --location 'http://localhost:8081/usertasks/instance?user=jdoe' \
+    --header 'Authorization: Bearer eyJhbG.........'
+```
+
+## Start a process instance in the unsecured runtime
 To start a process instance, just execute this HTTP request: \
 ```
-    curl --location 'http://localhost:8080/hiring' \
+    curl --location 'http://localhost:8082/hiring' \
         --header 'Accept: application/json' \
         --header 'Content-Type: application/json' \
         --data-raw '{

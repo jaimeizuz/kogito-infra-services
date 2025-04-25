@@ -4,7 +4,7 @@ global:
   # scrape_timeout is set to the global default (10s).
 
 scrape_configs:
-  - job_name: kogito-app-example-otlp
+  - job_name: kogito-bpmn-app-unsecured-otlp
     metrics_path: /metrics
     scrape_interval: 5s
     static_configs:
