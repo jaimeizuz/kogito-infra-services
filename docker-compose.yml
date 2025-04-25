@@ -271,7 +271,6 @@ services:
         condition: service_healthy
   bamoe-maven-repository:
     container_name: bamoe-maven-repository
-    #image: apache/incubator-kie-kogito-management-console:10.0.0
     image: quay.io/bamoe/maven-repository:9.2.0-ibm-0004
     profiles:
       - bamoe-maven-repository
