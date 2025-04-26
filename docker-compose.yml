@@ -1,4 +1,19 @@
 services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.28.0-alpine3.21
+    profiles:
+      - kogito-bpmn-apps
+    volumes:
+    - ./nginx/templates:/etc/nginx/templates
+    ports:
+    - "8000:80"
+    environment:
+    - NGINX_HOST=localhost
+    - NGINX_PORT=80
+    depends_on:
+      kogito-bpmn-app-unsecured:
+        condition: service_started
   kogito-bpmn-app-secured:
     container_name: kogito-bpmn-app-secured
     image: dev.local/kogito/kogito-bpmn-app-secured:1.0.0-SNAPSHOT
@@ -134,7 +149,7 @@ services:
       QUARKUS_HTTP_AUTH_PERMISSION__AUTHENTICATED__PATHS: /*
       QUARKUS_HTTP_AUTH_PERMISSION__AUTHENTICATED__POLICY: authenticated
       QUARKUS_HTTP_AUTH_PERMISSION__PUBLIC__PATHS: /q/*,/docs/*
-      QUARKUS_HTTP_AUTH_PERMISSION__PUBLIC__POLICY: permit   
+      QUARKUS_HTTP_AUTH_PERMISSION__PUBLIC__POLICY: permit
     depends_on:
       postgres-kogito-secured:
         condition: service_started
@@ -203,10 +218,10 @@ services:
       QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_DATASOURCE: "xos"
       QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_TYPE: "jdbc"
       QUARKUS_TRANSACTION-MANAGER_OBJECT-STORE_CREATE-TABLE: "true"
-      KOGITO_SERVICE_URL: 'http://localhost:8082'
-      KOGITO_DATA_INDEX_URL: 'http://localhost:8082'
-      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:8082'
-      KOGITO_JOBS_SERVICE_URL: 'http://localhost:8082'
+      KOGITO_SERVICE_URL: 'http://localhost:8082/kogito-bpmn-app-unsecured'
+      KOGITO_DATA_INDEX_URL: 'http://localhost:8082/kogito-bpmn-app-unsecured'
+      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:8082/kogito-bpmn-app-unsecured'
+      KOGITO_JOBS_SERVICE_URL: 'http://localhost:8082/kogito-bpmn-app-unsecured'
       # The current chunk size in minutes the scheduler handles, it is used to keep a limit number of jobs scheduled
       # in the in-memory scheduler.
       #KOGITO_JOBS-SERVICE_SCHEDULERCHUNKINMINUTES: 10
