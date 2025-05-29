@@ -250,7 +250,7 @@
         <!--
         -->
         <quarkus.platform.version>3.15.4</quarkus.platform.version>
-        <version.org.kie.kogito>999-20250420-SNAPSHOT</version.org.kie.kogito>
+        <version.org.kie.kogito>999-20250511-SNAPSHOT</version.org.kie.kogito>
         <!--
         <quarkus.platform.version>3.8.6.1</quarkus.platform.version>
         <kogito.version>999-20250126-SNAPSHOT</kogito.version>
@@ -262,7 +262,7 @@
         <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
         <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
         <kogito-apps.bom.artifact-id>kogito-apps-bom</kogito-apps.bom.artifact-id>
-        <version.org.jbpm.quarkus.devui>999-20250420-SNAPSHOT</version.org.jbpm.quarkus.devui>
+        <version.org.jbpm.quarkus.devui>999-SNAPSHOT</version.org.jbpm.quarkus.devui>
       </properties>
 
       <dependencyManagement>
