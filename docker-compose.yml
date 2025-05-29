@@ -619,8 +619,9 @@ services:
       - full
       - monitoring
     volumes:
-      - './jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json'
-    #command: '--query.ui-config /etc/jaeger/jaeger-ui.json'
+      - './jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json:Z'
+      - './jaeger/config-elasticsearch.yaml:/etc/jaeger/config.yml:Z'
+    command: '--config /etc/jaeger/config.yml'
     environment:
       - METRICS_STORAGE_TYPE=prometheus
       - 'PROMETHEUS_SERVER_URL=http://prometheus:9090'
@@ -637,6 +638,9 @@ services:
       - 14250:14250
       - 5778:5778
       - 9411:9411
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
   otel_collector:
     container_name: opentelemetry-collector
     #image: otel/opentelemetry-collector-contrib:0.116.1
@@ -746,6 +750,11 @@ services:
       discovery.type: "single-node"
       xpack.security.enabled: "false"
       cluster.routing.allocation.disk.threshold_enabled: "false"
+    healthcheck:
+     test: curl -s http://localhost:9200 >/dev/null || exit 1
+     interval: 20s
+     timeout: 10s
+     retries: 20
   logstash:
     container_name: logstash
     #image: docker.io/elastic/logstash:8.16.2

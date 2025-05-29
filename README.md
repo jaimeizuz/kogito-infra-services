@@ -1,7 +1,7 @@
 # Kogito and Infrastructure services
 
 ## Create and run Kogito App (for quarkus:dev execution)
-1. In "kogito-app-example/kogito-bpmn-app-unsecured" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pembedded-postgresql" "-Pdevelopment" clean quarkus:dev`
+1. In "kogito-app-example/kogito-bpmn-app-unsecured" folder, run `mvn "-Pbamoe-community" "-Pbamoe-persistence-postgresql" "-Pembedded-postgresql" "-Pbamoe-audit" "-Pdevelopment" clean quarkus:dev`
 2. Access the jBPM Dev-UI in [http://localhost:8080/q/dev-ui/org.jbpm.jbpm-quarkus-devui/process-instances]() to check everything is up and running.
 
 ## Build the Kogito images
