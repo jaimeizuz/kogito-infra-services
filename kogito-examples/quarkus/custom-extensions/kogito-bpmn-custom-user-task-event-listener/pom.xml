@@ -7,39 +7,18 @@
   <groupId>org.jaime.kogito.tests</groupId>
   <artifactId>kogito-bpmn-custom-user-task-event-listener</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  
   <properties>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>3.15.4</quarkus.platform.version>
-    <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
-    <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
-    <kogito.bom.version>999-SNAPSHOT</kogito.bom.version>
-    <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
-    <micrometer.version>3.2.4</micrometer.version>
+    <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+    <version.logging-manager.quarkus>3.1.2</version.logging-manager.quarkus>
+    <bamoe.build>bamoe-community</bamoe.build>
   </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>${kogito.bom.group-id}</groupId>
-        <artifactId>${kogito.bom.artifact-id}</artifactId>
-        <version>${kogito.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -71,7 +50,192 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>bamoe-enterprise</id>
+      <activation>
+        <property>
+          <name>bamoe.build</name>
+          <value>bamoe-enterprise</value>
+        </property>
+        <activeByDefault>true</activeByDefault>
+      </activation>
 
+      <repositories>
+        <repository>
+          <id>ibm-bamoe-enterprise-maven-repository</id>
+          <url>http://localhost:8800</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>ibm-bamoe-enterprise-maven-repository</id>
+          <url>http://localhost:8800</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+
+      <properties>
+        <!--
+        <quarkus.platform.group-id>com.redhat.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.version>3.8.6.SP1-redhat-00002</quarkus.platform.version>
+        <quarkus-plugin.version>3.8.6.SP1-redhat-00002</quarkus-plugin.version>
+        -->
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.version>3.15.4</quarkus.platform.version>
+        <bamoe.bom.group-id>com.ibm.bamoe</bamoe.bom.group-id>
+        <bamoe.bom.artifact-id>bamoe-bom</bamoe.bom.artifact-id>
+        <version.org.kie.kogito>9.2.0-ibm-0004</version.org.kie.kogito>
+        <micrometer.version>3.2.4</micrometer.version>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>${quarkus.platform.group-id}</groupId>
+            <artifactId>${quarkus.platform.artifact-id}</artifactId>
+            <version>${quarkus.platform.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>${bamoe.bom.group-id}</groupId>
+            <artifactId>${bamoe.bom.artifact-id}</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>${bamoe.bom.group-id}</groupId>
+            <artifactId>bamoe-techpreview-bom</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bom</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+
+    <profile>
+      <id>bamoe-community</id>
+      <activation>
+        <property>
+          <name>bamoe.build</name>
+          <value>bamoe-community</value>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repository.apache.org/content/groups/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repository.apache.org/content/groups/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+
+      <properties>
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <!--
+        -->
+        <quarkus.platform.version>3.20.1</quarkus.platform.version>
+        <version.org.kie.kogito>999-20250601-SNAPSHOT</version.org.kie.kogito>
+        <!--
+        <quarkus.platform.version>3.8.6.1</quarkus.platform.version>
+        <kogito.version>10.1.0</kogito.version>
+        -->
+        <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
+        <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
+        <kogito-apps.bom.artifact-id>kogito-apps-bom</kogito-apps.bom.artifact-id>
+        <micrometer.version>3.3.1</micrometer.version>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>${quarkus.platform.group-id}</groupId>
+            <artifactId>${quarkus.platform.artifact-id}</artifactId>
+            <version>${quarkus.platform.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>${kogito.bom.group-id}</groupId>
+            <artifactId>${kogito.bom.artifact-id}</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>${kogito.bom.group-id}</groupId>
+            <artifactId>${kogito-apps.bom.artifact-id}</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-kie-bom</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bom</artifactId>
+            <version>${version.org.kie.kogito}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+  </profiles>
+  
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
