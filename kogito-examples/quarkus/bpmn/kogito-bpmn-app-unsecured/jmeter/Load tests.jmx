@@ -42,6 +42,11 @@
             <stringProp name="Argument.value">8082</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="kogito-app-root-context" elementType="Argument">
+            <stringProp name="Argument.name">kogito-app-root-context</stringProp>
+            <stringProp name="Argument.value">/kogito-bpmn-app-unsecured</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
           <elementProp name="process-definition-id" elementType="Argument">
             <stringProp name="Argument.name">process-definition-id</stringProp>
             <stringProp name="Argument.value">TestProcess</stringProp>
@@ -49,7 +54,7 @@
           </elementProp>
           <elementProp name="iterationsNr" elementType="Argument">
             <stringProp name="Argument.name">iterationsNr</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="usersNr" elementType="Argument">
@@ -59,7 +64,7 @@
           </elementProp>
           <elementProp name="rampUp" elementType="Argument">
             <stringProp name="Argument.name">rampUp</stringProp>
-            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -239,7 +244,7 @@
           <stringProp name="HTTPSampler.port">${kogito-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/hiring</stringProp>
+          <stringProp name="HTTPSampler.path">${kogito-app-root-context}/hiring</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -278,7 +283,7 @@
           <stringProp name="HTTPSampler.port">${kogito-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/usertasks/instance?user=jdoe</stringProp>
+          <stringProp name="HTTPSampler.path">${kogito-app-root-context}/usertasks/instance?user=jdoe</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -300,7 +305,7 @@
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[User Task 1  - HR Interview] Complete" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[User Task 1  - HR Interview] Complete" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -324,7 +329,7 @@
           <stringProp name="HTTPSampler.port">${kogito-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/usertasks/instance/${taskInstanceId}/transition?user=jdoe</stringProp>
+          <stringProp name="HTTPSampler.path">${kogito-app-root-context}/usertasks/instance/${taskInstanceId}/transition?user=jdoe</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -357,7 +362,7 @@
           <stringProp name="HTTPSampler.port">${kogito-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/usertasks/instance?user=jdoe</stringProp>
+          <stringProp name="HTTPSampler.path">${kogito-app-root-context}/usertasks/instance?user=jdoe</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -399,7 +404,7 @@
           <stringProp name="HTTPSampler.port">${kogito-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/usertasks/instance/${taskInstanceId}/transition?user=jdoe</stringProp>
+          <stringProp name="HTTPSampler.path">${kogito-app-root-context}/usertasks/instance/${taskInstanceId}/transition?user=jdoe</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
