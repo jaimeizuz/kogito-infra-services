@@ -1,6 +1,5 @@
 package org.kie.kogito.hr.workitemhandlers.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrat
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
-import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.internal.process.workitem.WorkItemHandlerRuntimeException;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
@@ -32,6 +30,8 @@ public class DummyWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     private int errorsCount = 0;
     
+    @RestClient
+    @Inject
     DummyRestClient dummyRestClient;
 
     public DummyWorkItemHandler(DummyRestClient dummyRestClient) {

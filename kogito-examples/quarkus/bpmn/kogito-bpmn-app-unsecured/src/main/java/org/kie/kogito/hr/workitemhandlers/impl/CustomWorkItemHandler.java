@@ -26,17 +26,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 
-public class DummyWorkItemHandler extends DefaultKogitoWorkItemHandler {
+@ApplicationScoped
+public class CustomWorkItemHandler extends DefaultKogitoWorkItemHandler {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(DevModeWorkflowLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomWorkItemHandler.class);
 
     private int errorsCount = 0;
     
+    //@Inject
+    //@RestClient
     DummyRestClient dummyRestClient;
 
-    public DummyWorkItemHandler(DummyRestClient dummyRestClient) {
+    public CustomWorkItemHandler(){}
+
+    public CustomWorkItemHandler(DummyRestClient dummyRestClient) {
         this.dummyRestClient = dummyRestClient;
-    } 
+    }
 
     @Override
     public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
@@ -46,16 +51,16 @@ public class DummyWorkItemHandler extends DefaultKogitoWorkItemHandler {
         String errorStrategy = (String) workitem.getParameter("errorStrategy");
         Boolean throwException = (Boolean) workitem.getParameter("throwException");
 
-        LOGGER.info("CALLING DUMMY WIH WITH ERRORSTRATEGY " + errorStrategy);
+        LOGGER.info("CALLING CustomWorkItemHandler WITH ERRORSTRATEGY " + errorStrategy);
 
-        /*
+        
         try {
             dummyRestClient.getDummy();
         }
         catch(Exception ex) {
             handleError(errorStrategy, ex);
         }
-        */
+        
         
         if(throwException) {
             errorsCount = new Random().nextInt(5);
