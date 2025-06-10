@@ -251,7 +251,7 @@
         <!--
         -->
         <quarkus.platform.version>3.20.1</quarkus.platform.version>
-        <version.org.kie.kogito>999-20250601-SNAPSHOT</version.org.kie.kogito>
+        <version.org.kie.kogito>999-20250608-SNAPSHOT</version.org.kie.kogito>
         <!--
         <quarkus.platform.version>3.8.6.1</quarkus.platform.version>
         <kogito.version>10.1.0</kogito.version>
