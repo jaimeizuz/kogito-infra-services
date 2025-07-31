@@ -96,11 +96,11 @@
         -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.15.4</quarkus.platform.version>
+        <quarkus.platform.version>3.20.2</quarkus.platform.version>
         <bamoe.bom.group-id>com.ibm.bamoe</bamoe.bom.group-id>
         <bamoe.bom.artifact-id>bamoe-bom</bamoe.bom.artifact-id>
-        <version.org.kie.kogito>9.2.0-ibm-0004</version.org.kie.kogito>
-        <micrometer.version>3.2.4</micrometer.version>
+        <version.org.kie.kogito>9.2.1-ibm-0005</version.org.kie.kogito>
+        <micrometer.version>3.3.1</micrometer.version>
       </properties>
 
       <dependencyManagement>
@@ -182,8 +182,8 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <!--
         -->
-        <quarkus.platform.version>3.20.1</quarkus.platform.version>
-        <version.org.kie.kogito>999-20250608-SNAPSHOT</version.org.kie.kogito>
+        <quarkus.platform.version>3.20.2</quarkus.platform.version>
+        <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
         <!--
         <quarkus.platform.version>3.8.6.1</quarkus.platform.version>
         <kogito.version>10.1.0</kogito.version>

@@ -1,0 +1,88 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/quarkus-version: 3.20.1
+    app.quarkus.io/commit-id: d2d3c9aeed6469721569416da260eb4478edc700
+    app.quarkus.io/build-timestamp: 2025-06-25 - 12:44:20 +0000
+  labels:
+    app.kubernetes.io/name: kogito-dmn-test-service
+    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/managed-by: quarkus
+  name: kogito-dmn-test-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/version: 1.0.0
+      app.kubernetes.io/name: kogito-dmn-test-service
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/quarkus-version: 3.20.1
+        app.quarkus.io/commit-id: d2d3c9aeed6469721569416da260eb4478edc700
+        app.quarkus.io/build-timestamp: 2025-06-25 - 12:44:20 +0000
+      labels:
+        app.kubernetes.io/managed-by: quarkus
+        app.kubernetes.io/version: 1.0.0
+        app.kubernetes.io/name: kogito-dmn-test-service
+    spec:
+      containers:
+        - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace                  
+            - name: JAVA_OPTS
+              value: "-XshowSettings:system -XX:ActiveProcessorCount=1 -XX:MaxRAMPercentage=80.0 -XX:+UseG1GC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/jboss"
+            - name: SYSTEM_OPTS
+              value: "-Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12346 -Dcom.sun.management.jmxremote.rmi.port=12346 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.host=0.0.0.0 -Djava.rmi.server.hostname=localhost"
+
+          image: {{ .Values.app.image }}
+          imagePullPolicy: Always
+          name: kogito-dmn-test-project
+          ports:
+            - containerPort: {{ .Values.app.ports.http }}
+              name: http
+              protocol: TCP
+            - containerPort: 12346
+              name: jmx
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 300m
+              memory: 378Mi
+            requests:
+              cpu: 300m
+              memory: 378Mi
+          readinessProbe:
+            failureThreshold: {{ .Values.app.readinessProbe.failureThreshold }}
+            httpGet:
+              path: {{ .Values.app.readinessProbe.httpGet.path }}
+              port: {{ .Values.app.ports.http }}
+              scheme: {{ .Values.app.readinessProbe.httpGet.scheme }}
+            initialDelaySeconds: {{ .Values.app.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.app.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.app.readinessProbe.timeoutSeconds }}
+          livenessProbe:
+            failureThreshold: {{ .Values.app.livenessProbe.failureThreshold }}
+            httpGet:
+              path: {{ .Values.app.livenessProbe.httpGet.path }}
+              port: {{ .Values.app.ports.http }}
+              scheme: {{ .Values.app.livenessProbe.httpGet.scheme }}
+            initialDelaySeconds: {{ .Values.app.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.app.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.app.livenessProbe.timeoutSeconds }}
+          startupProbe:
+            failureThreshold: {{ .Values.app.startupProbe.failureThreshold }}
+            httpGet:
+              path: {{ .Values.app.startupProbe.httpGet.path }}
+              port: {{ .Values.app.ports.http }}
+              scheme: {{ .Values.app.startupProbe.httpGet.scheme }}
+            initialDelaySeconds: {{ .Values.app.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.app.startupProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.app.startupProbe.timeoutSeconds }}

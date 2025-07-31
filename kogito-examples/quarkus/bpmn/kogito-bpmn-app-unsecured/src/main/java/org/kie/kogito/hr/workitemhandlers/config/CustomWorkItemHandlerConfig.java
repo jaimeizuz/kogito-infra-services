@@ -2,7 +2,7 @@ package org.kie.kogito.hr.workitemhandlers.config;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.kie.kogito.hr.rest.client.DummyRestClient;
-import org.kie.kogito.hr.workitemhandlers.impl.DummyWorkItemHandler;
+import org.kie.kogito.hr.workitemhandlers.impl.CustomWorkItemHandler;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,6 +16,6 @@ public class CustomWorkItemHandlerConfig extends DefaultWorkItemHandlerConfig {
     DummyRestClient dummyRestClient;
 
     {
-        register("CustomTask", new DummyWorkItemHandler(dummyRestClient));
+        register("Custom", new CustomWorkItemHandler());
     }
 }

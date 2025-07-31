@@ -22,6 +22,21 @@ public class DummyServiceTask {
 
     Logger logger = Logger.getLogger(DummyServiceTask.class);
 
+    public String callDummy() {
+        Response response = null;
+        
+        try {
+            response = dummyRestClient.getDummy();
+
+            logger.info("DUMMY RESPONSE: " + response.readEntity(String.class));
+        }
+        catch(Exception ex) {
+            throw new WorkItemHandlerRuntimeException(ex);
+        }   
+        
+        return "success";
+    }
+
     public String callDummy(PersonDTO person) {
         Response response = null;
 

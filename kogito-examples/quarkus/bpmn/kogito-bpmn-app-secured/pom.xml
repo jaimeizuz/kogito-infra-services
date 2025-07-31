@@ -16,7 +16,7 @@
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
     <version.logging-manager.quarkus>3.1.2</version.logging-manager.quarkus>
-    <micrometer.version>3.2.4</micrometer.version>
+    <micrometer.version>3.3.1</micrometer.version>
     <bamoe.build>bamoe-community</bamoe.build>
   </properties>
 
@@ -163,12 +163,13 @@
         -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.15.4</quarkus.platform.version>
+        <quarkus.platform.version>3.20.2</quarkus.platform.version>
         <bamoe.bom.group-id>com.ibm.bamoe</bamoe.bom.group-id>
         <bamoe.bom.artifact-id>bamoe-bom</bamoe.bom.artifact-id>
-        <version.org.kie.kogito>9.2.0-ibm-0004</version.org.kie.kogito>
-        <version.org.jbpm.quarkus.devui>9.2.0-ibm-0004</version.org.jbpm.quarkus.devui>
-        <quarkus.embedded.postgresql.version>0.3.1</quarkus.embedded.postgresql.version>
+        <version.org.kie.kogito>9.2.1-ibm-0005</version.org.kie.kogito>
+        <group-id.jbpm.quarkus.devui>com.ibm.bamoe</group-id.jbpm.quarkus.devui>
+        <artifact-id.jbpm.quarkus.devui>bamoe-quarkus-devui</artifact-id.jbpm.quarkus.devui>
+        <version.jbpm.quarkus.devui>9.2.1-ibm-0005</version.jbpm.quarkus.devui>
       </properties>
 
       <dependencyManagement>
@@ -248,19 +249,14 @@
       <properties>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <!--
-        -->
-        <quarkus.platform.version>3.20.1</quarkus.platform.version>
-        <version.org.kie.kogito>999-20250608-SNAPSHOT</version.org.kie.kogito>
-        <!--
-        <quarkus.platform.version>3.15.4</quarkus.platform.version>
-        <kogito.version>10.1.0</kogito.version>
-        -->
+        <quarkus.platform.version>3.20.2</quarkus.platform.version>
+        <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
         <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
         <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
         <kogito-apps.bom.artifact-id>kogito-apps-bom</kogito-apps.bom.artifact-id>
-        <version.org.jbpm.quarkus.devui>999-SNAPSHOT</version.org.jbpm.quarkus.devui>
-        <quarkus.embedded.postgresql.version>0.5.0</quarkus.embedded.postgresql.version>
+        <group-id.jbpm.quarkus.devui>org.jbpm</group-id.jbpm.quarkus.devui>
+        <artifact-id.jbpm.quarkus.devui>jbpm-quarkus-devui</artifact-id.jbpm.quarkus.devui>
+        <version.jbpm.quarkus.devui>999-SNAPSHOT</version.jbpm.quarkus.devui>
       </properties>
 
       <dependencyManagement>
@@ -308,7 +304,7 @@
       <id>development</id>
       <properties>
         <quarkus.profile>dev</quarkus.profile>
-        <quarkus.wiremock.version>1.3.3</quarkus.wiremock.version>
+        <quarkus.wiremock.version>1.5.1</quarkus.wiremock.version>
       </properties>
       <!--
       <dependencyManagement>
@@ -327,9 +323,9 @@
         <!--
         -->
         <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-quarkus-devui</artifactId>
-          <version>${version.org.jbpm.quarkus.devui}</version>
+          <groupId>${group-id.jbpm.quarkus.devui}</groupId>
+          <artifactId>${artifact-id.jbpm.quarkus.devui}</artifactId>
+          <version>${version.jbpm.quarkus.devui}</version>
         </dependency>
         <dependency>
           <groupId>io.quarkiverse.wiremock</groupId>
@@ -347,6 +343,22 @@
 
     <profile>
       <id>embedded-postgresql</id>
+      <properties>
+        <quarkus.embedded.postgresql.version>0.7.2</quarkus.embedded.postgresql.version>
+        <postgresql.version>17.2.0</postgresql.version>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>io.zonky.test.postgres</groupId>
+            <artifactId>embedded-postgres-binaries-bom</artifactId>
+            <version>${postgresql.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>io.quarkiverse.embedded.postgresql</groupId>
@@ -424,7 +436,7 @@
         </dependency>
         <dependency>
           <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+          <artifactId>quarkus-messaging-kafka</artifactId>
         </dependency>
         <!-- Events -->
         <dependency>
@@ -483,7 +495,7 @@
         <dependency>
           <groupId>io.quarkiverse.oidc-proxy</groupId>
           <artifactId>quarkus-oidc-proxy</artifactId>
-          <version>0.1.2</version>
+          <version>0.2.2</version>
         </dependency>
         <dependency>
           <groupId>io.quarkus</groupId>

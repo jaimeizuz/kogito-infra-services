@@ -1,9 +1,19 @@
 {
   "Servers": {
     "1": {
-      "Name": "kogito",
+      "Name": "Kogito secured app",
       "Group": "Servers",
-      "Host": "postgres",
+      "Host": "postgres-kogito-secured",
+      "Port": 5432,
+      "MaintenanceDB": "kogito",
+      "Username": "kogito-user",
+      "SSLMode": "disable",
+      "PassFile": "/var/lib/pgadmin/pgpass"
+    },
+    "2": {
+      "Name": "Kogito unsecured app",
+      "Group": "Servers",
+      "Host": "postgres-kogito-unsecured",
       "Port": 5432,
       "MaintenanceDB": "kogito",
       "Username": "kogito-user",

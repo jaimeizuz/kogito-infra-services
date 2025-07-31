@@ -1,6 +1,10 @@
 package org.kie.kogito.hr.workitemhandlers.impl;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,9 +22,10 @@ import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.internal.process.workitem.WorkItemHandlerRuntimeException;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
-import org.kie.kogito.quarkus.processes.devservices.DevModeWorkflowLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,42 +51,93 @@ public class CustomWorkItemHandler extends DefaultKogitoWorkItemHandler {
     @Override
     public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
 
-        Response response = null;
-
         String errorStrategy = (String) workitem.getParameter("errorStrategy");
         Boolean throwException = (Boolean) workitem.getParameter("throwException");
 
         LOGGER.info("CALLING CustomWorkItemHandler WITH ERRORSTRATEGY " + errorStrategy);
 
-        
+
+        /*
+        Response response = null;
+
         try {
             dummyRestClient.getDummy();
         }
         catch(Exception ex) {
             handleError(errorStrategy, ex);
         }
+        */
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create("http://localhost:19002/dummy"))
+          .header("Accept", "application/json")
+          .GET()
+          .build();
+
+        try {
+            //ObjectMapper objectMapper = new ObjectMapper();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() < 200 || response.statusCode() > 299) {
+                if(errorStrategy.equals("RETRY")
+                    || errorStrategy.equals("COMPLETE")
+                    || errorStrategy.equals("RETHROW")
+                    || errorStrategy.equals("ABORT")) {
+
+                    LOGGER.info("HANDLING WIH ERROR");
+                    
+                    //handleError(workitem.getProcessInstance().getProcessId(), errorStrategy, new WorkItemExecutionException(errorStrategy), -1);
+                    //throw new WorkItemExecutionException("unknownerror");
+                    handleError(null, errorStrategy, new WorkItemExecutionException(errorStrategy), 0);
+
+                //} else if (errorStrategy.equals("ABORT")) {
+                    
+                //    LOGGER.info("ABORTING WIH");
+
+                //    return Optional.of(handler.abortTransition(workitem.getPhaseStatus()));
+                } else {
+                    // Don’t forget to finish the work item otherwise the process
+                    // will be active infinitely and never will pass the flow
+                    // to the next node.
+                    LOGGER.info("OTHER STRATEGY");
+
+                    return Optional.of(handler.completeTransition(workitem.getPhaseStatus(), new HashMap<>()));
+                }
+            }
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Failed to fetch posts", e);
+        }
         
-        
+        /*
         if(throwException) {
-            errorsCount = new Random().nextInt(5);
+            errorsCount = new Random().nextInt(3);
             if(errorsCount < 2) {
                 if(errorStrategy.equals("RETRY")
                     || errorStrategy.equals("COMPLETE")
                     || errorStrategy.equals("RETHROW")) {
+
+                    LOGGER.info("HANDLING WIH ERROR");
                     
                     handleError(errorStrategy, new WorkItemExecutionException(errorStrategy));
 
                 } else if (errorStrategy.equals("ABORT")) {
+                    
+                    LOGGER.info("ABORTING WIH");
+
                     return Optional.of(handler.abortTransition(workitem.getPhaseStatus()));
                 } else {
                     // Don’t forget to finish the work item otherwise the process
                     // will be active infinitely and never will pass the flow
                     // to the next node.
+                    LOGGER.info("OTHER STRATEGY");
+
                     return Optional.of(handler.completeTransition(workitem.getPhaseStatus(), new HashMap<>()));
                 }
-                System.out.println("ERRORS COUNT: " + errorsCount);
             }
         }
+        */
 
         LOGGER.info("WIH SUCCESSFULLY EXECUTED");
         return Optional.of(handler.completeTransition(workitem.getPhaseStatus(), new HashMap<>()));
@@ -93,13 +149,13 @@ public class CustomWorkItemHandler extends DefaultKogitoWorkItemHandler {
         return Optional.empty();
     }
 
-    private void handleError(String strategy, Throwable ex) {
-        /*
-        throw new ProcessWorkItemHandlerException("error_handling",
+    private void handleError(String processId, String strategy, Throwable ex, int retries) {
+        
+        throw new ProcessWorkItemHandlerException(processId,
                 ProcessWorkItemHandlerException.HandlingStrategy.valueOf(strategy),
-                new IllegalStateException(strategy + " strategy test"),
-                2);
-         */
-        throw new WorkItemHandlerRuntimeException(ex);
+                ex,
+                retries);
+        
+        //throw new WorkItemHandlerRuntimeException(ex);
     }
 }
