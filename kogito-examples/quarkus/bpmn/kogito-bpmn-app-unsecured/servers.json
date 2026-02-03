@@ -1,0 +1,1 @@
+{"Servers":{"1":{"Name":"Local dev","Group":"Local","Host":"host.docker.internal","Port":5532,"MaintenanceDB":"postgres","Username":"postgres","PassFile":"/pgpass","SSLMode":"prefer","SavePassword":true}}}

@@ -163,13 +163,13 @@
         -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.20.2</quarkus.platform.version>
+        <quarkus.platform.version>3.20.3</quarkus.platform.version>
         <bamoe.bom.group-id>com.ibm.bamoe</bamoe.bom.group-id>
         <bamoe.bom.artifact-id>bamoe-bom</bamoe.bom.artifact-id>
-        <version.org.kie.kogito>9.2.1-ibm-0005</version.org.kie.kogito>
+        <version.org.kie.kogito>9.3.0-ibm-0007</version.org.kie.kogito>
         <group-id.jbpm.quarkus.devui>com.ibm.bamoe</group-id.jbpm.quarkus.devui>
         <artifact-id.jbpm.quarkus.devui>bamoe-quarkus-devui</artifact-id.jbpm.quarkus.devui>
-        <version.jbpm.quarkus.devui>9.2.1-ibm-0005</version.jbpm.quarkus.devui>
+        <version.jbpm.quarkus.devui>9.3.0-ibm-0007</version.jbpm.quarkus.devui>
         <quarkus.embedded.postgresql.version>0.7.2</quarkus.embedded.postgresql.version>
       </properties>
 
@@ -252,7 +252,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <!--
         -->
-        <quarkus.platform.version>3.20.2</quarkus.platform.version>
+        <quarkus.platform.version>3.20.3</quarkus.platform.version>
         <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
         <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
         <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
@@ -382,20 +382,15 @@
           <groupId>org.jbpm</groupId>
           <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
         </dependency>
-        <!-- Jobs Service -->
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kogito-addons-quarkus-jobs</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>jobs-service-storage-jpa</artifactId>
-        </dependency>
-        <!-- Jobs Management endpoints -->
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
-        </dependency>
+				<!-- BAMOE Async Jobs Service -->
+				<dependency>
+					<groupId>org.kie</groupId>
+					<artifactId>kogito-addons-quarkus-embedded-jobs-jpa</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.kie</groupId>
+					<artifactId>kogito-addons-quarkus-embedded-jobs</artifactId>
+				</dependency>
       </dependencies>
     </profile>
 
