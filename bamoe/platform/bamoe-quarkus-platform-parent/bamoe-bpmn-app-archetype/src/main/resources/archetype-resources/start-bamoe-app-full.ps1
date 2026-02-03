@@ -1,0 +1,1 @@
+mvn clean "-Pdevelopment" "-Ddisable-bamoe-kafka-events" "-Ddisable-bamoe-security" quarkus:dev
